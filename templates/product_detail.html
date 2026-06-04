@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>{{ product.Name }} – Auon Store</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,200;0,300;0,400;1,200;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--gold:#c9a84c;--gold-light:#e8d08a;--ink:#0a0602;--muted:#8a7e6a;}
+    body{font-family:'DM Sans',sans-serif;background:var(--ink);color:#d4c9b0;min-height:100vh;cursor:none;}
+
+    #cur-dot{position:fixed;width:8px;height:8px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);}
+    #cur-ring{position:fixed;width:36px;height:36px;border:1px solid rgba(201,168,76,.4);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .3s,height .3s;}
+
+    nav{padding:1.5rem 3.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(201,168,76,.08);position:sticky;top:0;background:rgba(10,6,2,.95);backdrop-filter:blur(10px);z-index:100;}
+    .nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:300;letter-spacing:.18em;color:#fff;text-decoration:none;}
+    .nav-logo span{color:var(--gold);}
+    .nav-right{display:flex;align-items:center;gap:1.5rem;}
+    .nav-back{font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.4);text-decoration:none;display:flex;align-items:center;gap:.5rem;transition:color .3s;}
+    .nav-back:hover{color:var(--gold);}
+    .cart-btn{background:none;border:1px solid rgba(255,255,255,.2);color:#fff;font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;padding:.5rem 1.2rem;cursor:none;font-family:'DM Sans',sans-serif;transition:all .3s;}
+    .cart-btn:hover{border-color:var(--gold);color:var(--gold);}
+
+    .container{max-width:1100px;margin:0 auto;padding:4rem 3.5rem;}
+    .product-wrap{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start;}
+
+    /* IMAGE GALLERY */
+    .img-frame{position:relative;width:100%;aspect-ratio:1;border:1px solid rgba(201,168,76,.15);background:linear-gradient(135deg,#120d04,#1a1208);overflow:hidden;}
+    .img-corner{position:absolute;width:20px;height:20px;border-color:var(--gold);border-style:solid;z-index:5;}
+    .img-corner.tl{top:-1px;left:-1px;border-width:1px 0 0 1px;}
+    .img-corner.br{bottom:-1px;right:-1px;border-width:0 1px 1px 0;}
+    .stock-badge{position:absolute;top:14px;left:14px;background:var(--gold);color:var(--ink);font-size:.55rem;letter-spacing:.15em;text-transform:uppercase;padding:.25rem .7rem;font-weight:500;z-index:5;}
+    .stock-badge.out{background:#333;color:#888;}
+
+    /* SLIDESHOW */
+    .slides{position:absolute;inset:0;}
+    .slide{position:absolute;inset:0;opacity:0;transition:opacity .7s ease;display:flex;align-items:center;justify-content:center;}
+    .slide.active{opacity:1;}
+    .slide img{width:100%;height:100%;object-fit:cover;}
+    .fallback{font-size:6rem;opacity:.2;}
+    .slide-prev,.slide-next{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.5);border:none;color:rgba(255,255,255,.8);font-size:1.8rem;width:40px;height:40px;cursor:pointer;z-index:10;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+    .slide-prev{left:8px;}
+    .slide-next{right:8px;}
+    .slide-prev:hover,.slide-next:hover{background:rgba(201,168,76,.7);color:var(--ink);}
+    .slide-dots{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:10;}
+    .dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.35);cursor:pointer;transition:all .25s;}
+    .dot.active{background:var(--gold);transform:scale(1.3);}
+
+    .info-eyebrow{font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:.8rem;}
+    .info-name{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4vw,3rem);font-weight:200;line-height:1.1;color:#e8ddc8;margin-bottom:1rem;}
+    .info-price{font-size:1.6rem;color:var(--gold-light);font-family:'Cormorant Garamond',serif;margin-bottom:2rem;}
+    .info-price small{font-size:.9rem;color:var(--muted);font-family:'DM Sans',sans-serif;}
+    .divider{height:1px;background:linear-gradient(90deg,rgba(201,168,76,.2),transparent);margin:1.5rem 0;}
+
+    .qty-wrap{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;}
+    .qty-label{font-size:.6rem;letter-spacing:.25em;text-transform:uppercase;color:var(--muted);}
+    .qty-controls{display:flex;align-items:center;border:1px solid rgba(201,168,76,.2);}
+    .qty-btn{width:36px;height:36px;background:none;border:none;color:var(--gold);font-size:1.1rem;cursor:none;display:flex;align-items:center;justify-content:center;transition:all .2s;font-family:'DM Sans',sans-serif;}
+    .qty-btn:hover{background:rgba(201,168,76,.1);}
+    .qty-num{width:40px;text-align:center;font-size:.9rem;color:#e8ddc8;border-left:1px solid rgba(201,168,76,.2);border-right:1px solid rgba(201,168,76,.2);height:36px;line-height:36px;}
+
+    .meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem 2rem;margin-bottom:2rem;}
+    .meta-label{font-size:.58rem;letter-spacing:.25em;text-transform:uppercase;color:var(--muted);margin-bottom:.2rem;}
+    .meta-val{font-size:.82rem;color:#d4c9b0;}
+
+    .desc-title{font-size:.6rem;letter-spacing:.25em;text-transform:uppercase;color:var(--muted);margin-bottom:.6rem;}
+    .desc-body{font-size:.85rem;font-weight:300;color:rgba(212,201,176,.6);line-height:2;margin-bottom:2rem;}
+
+    .btn-add{width:100%;padding:1rem;background:var(--gold);color:var(--ink);font-size:.72rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;border:none;cursor:none;font-family:'DM Sans',sans-serif;transition:all .3s;margin-bottom:.75rem;}
+    .btn-add:hover{background:var(--gold-light);transform:translateY(-2px);}
+    .btn-add:disabled{background:#333;color:#666;cursor:not-allowed;transform:none;}
+    .btn-checkout{width:100%;padding:1rem;background:none;border:1px solid var(--gold);color:var(--gold);font-size:.72rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;cursor:none;font-family:'DM Sans',sans-serif;transition:all .3s;margin-bottom:.75rem;}
+    .btn-checkout:hover{background:rgba(201,168,76,.08);}
+    .btn-wa{width:100%;padding:1rem;background:none;border:1px solid rgba(201,168,76,.25);color:var(--muted);font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;cursor:none;font-family:'DM Sans',sans-serif;transition:all .3s;text-decoration:none;display:block;text-align:center;}
+    .btn-wa:hover{border-color:var(--gold);color:var(--gold);}
+
+    .related{margin-top:5rem;}
+    .related-title{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:300;color:#e8ddc8;margin-bottom:2rem;}
+    .related-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1.2rem;}
+    .r-card{background:#0f0a03;border:1px solid rgba(201,168,76,.1);text-decoration:none;display:block;transition:border-color .3s;}
+    .r-card:hover{border-color:rgba(201,168,76,.35);}
+    .r-img{height:180px;background:linear-gradient(135deg,#120d04,#1a1208);display:flex;align-items:center;justify-content:center;overflow:hidden;}
+    .r-img img{width:100%;height:100%;object-fit:cover;}
+    .r-icon{font-size:3rem;opacity:.3;}
+    .r-info{padding:1rem;}
+    .r-name{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:300;color:#e8ddc8;margin-bottom:.3rem;}
+    .r-price{font-size:.78rem;color:var(--gold);}
+
+    #c-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:600;opacity:0;pointer-events:none;transition:opacity .3s;}
+    #c-overlay.on{opacity:1;pointer-events:all;}
+    #c-drawer{position:fixed;top:0;right:-420px;width:420px;height:100vh;background:#0f0a03;border-left:1px solid rgba(201,168,76,.15);z-index:700;transition:right .4s cubic-bezier(.77,0,.18,1);padding:2rem;display:flex;flex-direction:column;}
+    #c-drawer.on{right:0;}
+    .c-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid rgba(201,168,76,.1);}
+    .c-title{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:300;color:var(--gold-light);}
+    .c-close{background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:none;}
+    .c-empty{flex:1;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;}
+    .c-items{flex:1;overflow-y:auto;}
+    .c-item{display:flex;gap:1rem;padding:.9rem 0;border-bottom:1px solid rgba(255,255,255,.04);align-items:center;}
+    .c-item-icon{width:50px;height:50px;background:rgba(201,168,76,.08);display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;}
+    .c-item-info{flex:1;}
+    .c-item-name{font-size:.8rem;color:#e8ddc8;margin-bottom:.2rem;}
+    .c-item-price{font-size:.75rem;color:var(--gold);}
+    .c-item-controls{display:flex;align-items:center;gap:.5rem;margin-top:.4rem;}
+    .c-qty-btn{width:22px;height:22px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.2);color:var(--gold);font-size:.9rem;cursor:none;display:flex;align-items:center;justify-content:center;transition:all .2s;line-height:1;}
+    .c-qty-btn:hover{background:var(--gold);color:var(--ink);}
+    .c-qty-num{font-size:.72rem;color:#e8ddc8;min-width:18px;text-align:center;}
+    .c-remove{background:none;border:none;color:rgba(255,255,255,.2);font-size:.75rem;cursor:none;margin-left:.3rem;transition:color .2s;}
+    .c-remove:hover{color:#e08080;}
+    .c-footer{border-top:1px solid rgba(201,168,76,.1);padding-top:1.2rem;margin-top:auto;}
+    .c-total{display:flex;justify-content:space-between;margin-bottom:1rem;font-size:.82rem;color:#e8ddc8;}
+    .c-total-num{color:var(--gold-light);font-family:'Cormorant Garamond',serif;font-size:1.2rem;}
+    .c-checkout{width:100%;padding:.9rem;background:var(--gold);color:var(--ink);font-size:.7rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;border:none;cursor:none;font-family:'DM Sans',sans-serif;transition:background .2s;}
+    .c-checkout:hover{background:var(--gold-light);}
+    .c-clear{width:100%;padding:.6rem;margin-top:.5rem;background:none;border:1px solid rgba(255,255,255,.1);color:var(--muted);font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;cursor:none;font-family:'DM Sans',sans-serif;transition:all .2s;}
+    .c-clear:hover{border-color:rgba(200,60,60,.4);color:#e08080;}
+
+    #login-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:800;display:none;align-items:center;justify-content:center;}
+    #login-overlay.on{display:flex;}
+    #login-modal{background:#0f0a03;border:1px solid rgba(201,168,76,.2);padding:3rem;text-align:center;max-width:380px;width:90%;position:relative;}
+    .lm-corner{position:absolute;width:16px;height:16px;border-color:var(--gold);border-style:solid;}
+    .lm-tl{top:-1px;left:-1px;border-width:1px 0 0 1px;}
+    .lm-br{bottom:-1px;right:-1px;border-width:0 1px 1px 0;}
+    #login-modal h2{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:200;color:var(--gold-light);margin-bottom:.5rem;}
+    #login-modal p{font-size:.78rem;color:rgba(212,201,176,.5);margin-bottom:2rem;line-height:1.8;}
+    .google-btn{display:inline-flex;align-items:center;gap:.75rem;background:#fff;color:#333;font-size:.78rem;font-weight:500;padding:.85rem 1.8rem;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;transition:all .2s;}
+    .google-btn:hover{background:#f1f1f1;}
+    .google-btn img{width:20px;}
+    .modal-skip{display:block;margin-top:1.2rem;font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.2);cursor:pointer;}
+    .modal-skip:hover{color:var(--muted);}
+
+    #order-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:900;display:none;align-items:center;justify-content:center;}
+    #order-overlay.on{display:flex;}
+    #order-modal{background:#0f0a03;border:1px solid rgba(201,168,76,.25);padding:2.5rem;width:460px;max-width:92vw;position:relative;max-height:90vh;overflow-y:auto;}
+    .om-title{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:300;color:var(--gold-light);margin-bottom:.3rem;}
+    .om-sub{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:1.8rem;}
+    .om-field{display:flex;flex-direction:column;gap:.4rem;margin-bottom:1rem;}
+    .om-label{font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);}
+    .om-input{background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.15);color:#d4c9b0;padding:.75rem 1rem;font-size:.85rem;font-family:'DM Sans',sans-serif;outline:none;width:100%;transition:border-color .2s;}
+    .om-input:focus{border-color:rgba(201,168,76,.5);}
+    .om-textarea{resize:none;height:75px;}
+    .om-summary{background:rgba(201,168,76,.04);border:1px solid rgba(201,168,76,.1);padding:1rem;margin:1.2rem 0;}
+    .om-summary-title{font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:.75rem;}
+    .om-summary-item{display:flex;justify-content:space-between;font-size:.75rem;color:#c4b99e;margin-bottom:.4rem;}
+    .om-summary-total{display:flex;justify-content:space-between;padding-top:.6rem;border-top:1px solid rgba(201,168,76,.15);margin-top:.6rem;}
+    .om-summary-total span:first-child{font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);}
+    .om-summary-total span:last-child{font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--gold-light);}
+    #om-error{color:#e08888;font-size:.72rem;min-height:1rem;margin-bottom:.5rem;}
+    #om-loading{display:none;color:var(--gold);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.5rem;}
+    .om-actions{display:flex;gap:.75rem;margin-top:1.2rem;}
+    .om-btn-place{flex:1;padding:.9rem;background:var(--gold);color:var(--ink);font-size:.7rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;}
+    .om-btn-place:hover{background:var(--gold-light);}
+    .om-btn-cancel{padding:.9rem 1.2rem;background:none;border:1px solid rgba(255,255,255,.12);color:var(--muted);font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;font-family:'DM Sans',sans-serif;}
+    .om-btn-cancel:hover{border-color:rgba(200,60,60,.3);color:#e08080;}
+
+    #success-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:1000;display:none;align-items:center;justify-content:center;}
+    #success-overlay.on{display:flex;}
+    #success-modal{background:#0f0a03;border:1px solid rgba(201,168,76,.3);padding:3rem;text-align:center;max-width:400px;width:90%;position:relative;}
+    .sm-icon{font-size:3rem;margin-bottom:1rem;}
+    .sm-title{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;color:var(--gold-light);margin-bottom:.5rem;}
+    .sm-msg{font-size:.82rem;color:rgba(212,201,176,.6);line-height:1.8;margin-bottom:1.5rem;}
+    .sm-order-id{font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:var(--gold);margin-bottom:.5rem;}
+    .sm-close{padding:.8rem 2rem;background:var(--gold);color:var(--ink);font-size:.68rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;}
+    .sm-close:hover{background:var(--gold-light);}
+
+    #toast{position:fixed;bottom:2rem;right:2rem;background:var(--gold);color:var(--ink);padding:.8rem 1.5rem;font-size:.72rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;opacity:0;transform:translateY(10px);transition:all .3s;pointer-events:none;z-index:900;}
+    #toast.show{opacity:1;transform:translateY(0);}
+
+    @media(max-width:768px){
+      .product-wrap{grid-template-columns:1fr;}
+      nav{padding:1.2rem 1.5rem;}
+      .container{padding:2rem 1.5rem;}
+    }
+  </style>
+</head>
+<body>
+
+  <div id="cur-dot"></div>
+  <div id="cur-ring"></div>
+
+  <nav>
+    <a href="/" class="nav-logo">Auon<span>store</span></a>
+    <div class="nav-right">
+      <a href="javascript:history.back()" class="nav-back">← Back to Shop</a>
+      <button class="cart-btn" id="cartBtn">Cart (0)</button>
+    </div>
+  </nav>
+
+  <div id="login-overlay">
+    <div id="login-modal">
+      <div class="lm-corner lm-tl"></div>
+      <div class="lm-corner lm-br"></div>
+      <h2>Sign in to Shop</h2>
+      <p>Login with your Google account to add items to cart and place orders.</p>
+      <a href="{{ url_for('google.login') }}" class="google-btn">
+        <img src="https://developers.google.com/identity/images/g-logo.png" alt="G">
+        Continue with Google
+      </a>
+      <span class="modal-skip" onclick="document.getElementById('login-overlay').classList.remove('on')">Maybe later</span>
+    </div>
+  </div>
+
+  <div id="toast">Added to cart ✓</div>
+
+  <div class="container">
+    <div class="product-wrap">
+
+      <!-- IMAGE GALLERY SLIDESHOW -->
+      <div>
+        <div class="img-frame">
+          <div class="img-corner tl"></div>
+          <div class="img-corner br"></div>
+
+          {% set all_images = [] %}
+          {% if product.image %}{% set _ = all_images.append(product.image) %}{% endif %}
+          {% for g in gallery %}{% set _ = all_images.append(g.image) %}{% endfor %}
+
+          <div class="slides">
+            {% if all_images %}
+              {% for img in all_images %}
+              <div class="slide {% if loop.first %}active{% endif %}">
+                <img src="/static/images/{{ img }}" alt="{{ product.Name }}"
+                     onerror="this.style.display='none';this.nextSibling.style.display='flex';">
+                <div class="fallback" style="display:none;">◇</div>
+              </div>
+              {% endfor %}
+            {% else %}
+              <div class="slide active">
+                <div class="fallback">◇</div>
+              </div>
+            {% endif %}
+          </div>
+
+          {% if all_images|length > 1 %}
+          <button class="slide-prev" onclick="changeSlide(-1)">‹</button>
+          <button class="slide-next" onclick="changeSlide(1)">›</button>
+          <div class="slide-dots">
+            {% for img in all_images %}
+            <div class="dot {% if loop.first %}active{% endif %}" onclick="goToSlide({{ loop.index0 }})"></div>
+            {% endfor %}
+          </div>
+          {% endif %}
+
+          {% if product.Stock == 0 %}
+            <div class="stock-badge out">Sold Out</div>
+          {% elif product.Stock < 5 %}
+            <div class="stock-badge">Only {{ product.Stock }} left</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- INFO -->
+      <div class="info">
+        <div class="info-eyebrow">{{ product.category }}</div>
+        <h1 class="info-name">{{ product.Name }}</h1>
+        <div class="info-price"><small>PKR </small>{{ "%.0f"|format(product.price) }}</div>
+        <div class="divider"></div>
+        <div class="meta-grid">
+          <div class="meta-item">
+            <div class="meta-label">Material</div>
+            <div class="meta-val">{{ product.material or '—' }}</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Category</div>
+            <div class="meta-val">{{ product.category or '—' }}</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Stock</div>
+            <div class="meta-val">{{ product.Stock }} available</div>
+          </div>
+          {% if product.color %}
+          <div class="meta-item">
+            <div class="meta-label">Color</div>
+            <div class="meta-val">{{ product.color }}</div>
+          </div>
+          {% endif %}
+        </div>
+        {% if product.Description %}
+        <div class="desc-title">Description</div>
+        <div class="desc-body">{{ product.Description }}</div>
+        {% endif %}
+        <div class="divider"></div>
+        {% if product.Stock > 0 %}
+        <div class="qty-wrap">
+          <span class="qty-label">Quantity</span>
+          <div class="qty-controls">
+            <button class="qty-btn" onclick="changeQty(-1)">−</button>
+            <div class="qty-num" id="qtyNum">1</div>
+            <button class="qty-btn" onclick="changeQty(1)">+</button>
+          </div>
+        </div>
+        <button class="btn-add" onclick="addToCart()">Add to Cart</button>
+        <button class="btn-checkout" onclick="buyNow()">✓ Buy Now</button>
+        {% else %}
+        <button class="btn-add" disabled>Sold Out</button>
+        {% endif %}
+        <a href="https://wa.me/923293931034?text=Hi! I'm interested in {{ product.Name }} (PKR {{ "%.0f"|format(product.price) }}). Is it available?"
+           target="_blank" class="btn-wa">💬 Ask on WhatsApp</a>
+      </div>
+
+    </div>
+
+    {% if related %}
+    <div class="related">
+      <div class="related-title">You may also like</div>
+      <div class="related-grid">
+        {% for r in related %}
+        <a href="{{ url_for('product_detail', id=r.ID) }}" class="r-card">
+          <div class="r-img">
+            {% if r.image %}
+            <img src="/static/images/{{ r.image }}" alt="{{ r.Name }}"
+                 onerror="this.style.display='none';this.nextSibling.style.display='flex';">
+            <div class="r-icon" style="display:none;">◇</div>
+            {% else %}
+            <div class="r-icon">◇</div>
+            {% endif %}
+          </div>
+          <div class="r-info">
+            <div class="r-name">{{ r.Name }}</div>
+            <div class="r-price">PKR {{ "%.0f"|format(r.price) }}</div>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+
+  <div id="c-overlay"></div>
+  <div id="c-drawer">
+    <div class="c-header">
+      <div class="c-title">Your Cart</div>
+      <button class="c-close" id="cClose">✕</button>
+    </div>
+    <div class="c-items" id="cItems"><div class="c-empty">Your cart is empty</div></div>
+    <div class="c-footer" id="cFooter" style="display:none;">
+      <div class="c-total"><span>Total</span><span class="c-total-num" id="cTotal">PKR 0</span></div>
+      <button class="c-checkout" onclick="openOrderForm()">✓ Place Order</button>
+      <button class="c-clear" onclick="clearCart()">Clear Cart</button>
+    </div>
+  </div>
+
+  <div id="order-overlay">
+    <div id="order-modal">
+      <div class="om-title">Checkout</div>
+      <div class="om-sub">Fill your details to place order</div>
+      <div class="om-summary">
+        <div class="om-summary-title">Your Order</div>
+        <div id="om-items-list"></div>
+        <div class="om-summary-total">
+          <span>Total</span>
+          <span id="om-total-display">PKR 0</span>
+        </div>
+      </div>
+      <div class="om-field">
+        <label class="om-label">Full Name *</label>
+        <input id="om-name" class="om-input" type="text" placeholder="Sara Ahmed" value="{{ session.customer_name if session.customer_name else '' }}"/>
+      </div>
+      <div class="om-field">
+        <label class="om-label">Phone Number *</label>
+        <input id="om-phone" class="om-input" type="text" placeholder="03001234567"/>
+      </div>
+      <div class="om-field">
+        <label class="om-label">Email * (confirmation sent here)</label>
+        <input id="om-email" class="om-input" type="email" placeholder="sara@email.com" value="{{ session.customer_email if session.customer_email else '' }}"/>
+      </div>
+      <div class="om-field">
+        <label class="om-label">Delivery Address</label>
+        <textarea id="om-address" class="om-input om-textarea" placeholder="Street, Area, Karachi"></textarea>
+      </div>
+      <div id="om-error"></div>
+      <div id="om-loading">⏳ Placing your order...</div>
+      <div class="om-actions">
+        <button class="om-btn-place" onclick="submitOrder()">✓ Place Order</button>
+        <button class="om-btn-cancel" onclick="closeOrderForm()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="success-overlay">
+    <div id="success-modal">
+      <div class="lm-corner lm-tl" style="position:absolute;width:16px;height:16px;border-color:var(--gold);border-style:solid;top:-1px;left:-1px;border-width:1px 0 0 1px;"></div>
+      <div class="lm-corner lm-br" style="position:absolute;width:16px;height:16px;border-color:var(--gold);border-style:solid;bottom:-1px;right:-1px;border-width:0 1px 1px 0;"></div>
+      <div class="sm-icon">✦</div>
+      <div class="sm-title">Order Placed!</div>
+      <div class="sm-order-id" id="sm-order-id">#0000</div>
+      <div class="sm-msg">Your order has been placed successfully.<br>A confirmation email has been sent to your inbox.<br>We'll contact you shortly to confirm delivery.</div>
+      <button class="sm-close" onclick="closeSuccess()">Continue Shopping</button>
+    </div>
+  </div>
+
+  <script>
+    const IS_LOGGED_IN  = {{ 'true' if session.customer_id else 'false' }};
+    const PRODUCT_NAME  = {{ product.Name | tojson }};
+    const PRODUCT_PRICE = {{ "%.0f"|format(product.price) }};
+    const CART_KEY      = 'malikCart';
+
+    // ── CURSOR ──
+    const dot = document.getElementById('cur-dot');
+    const ring = document.getElementById('cur-ring');
+    let mx=0,my=0,rx=0,ry=0;
+    document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px';});
+    (function animR(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animR);})();
+
+    // ── SLIDESHOW ──
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const dots   = document.querySelectorAll('.dot');
+    let autoTimer;
+
+    function goToSlide(n) {
+      slides[currentSlide].classList.remove('active');
+      if(dots[currentSlide]) dots[currentSlide].classList.remove('active');
+      currentSlide = (n + slides.length) % slides.length;
+      slides[currentSlide].classList.add('active');
+      if(dots[currentSlide]) dots[currentSlide].classList.add('active');
+    }
+
+    function changeSlide(delta) {
+      goToSlide(currentSlide + delta);
+      resetAuto();
+    }
+
+    function startAuto() {
+      autoTimer = setInterval(() => goToSlide(currentSlide + 1), 3500);
+    }
+
+    function resetAuto() {
+      clearInterval(autoTimer);
+      startAuto();
+    }
+
+    if (slides.length > 1) startAuto();
+
+    // ── QTY ──
+    let selectedQty = 1;
+    const maxStock  = {{ product.Stock }};
+    function changeQty(delta) {
+      selectedQty = Math.max(1, Math.min(maxStock, selectedQty + delta));
+      document.getElementById('qtyNum').textContent = selectedQty;
+    }
+
+    // ── CART ──
+    function loadCart() { return JSON.parse(sessionStorage.getItem(CART_KEY) || '[]'); }
+    function saveCart(cart) { sessionStorage.setItem(CART_KEY, JSON.stringify(cart)); }
+
+    function addToCart() {
+      if (!IS_LOGGED_IN) { document.getElementById('login-overlay').classList.add('on'); return; }
+      let cart = loadCart();
+      const existing = cart.find(i => i.name === PRODUCT_NAME);
+      if (existing) { existing.qty = Math.min(maxStock, existing.qty + selectedQty); }
+      else { cart.push({ name: PRODUCT_NAME, price: PRODUCT_PRICE, qty: selectedQty }); }
+      saveCart(cart); renderCart(); showToast('Added to cart ✓'); openCart();
+    }
+
+    function buyNow() {
+      if (!IS_LOGGED_IN) { document.getElementById('login-overlay').classList.add('on'); return; }
+      let cart = loadCart();
+      const existing = cart.find(i => i.name === PRODUCT_NAME);
+      if (existing) { existing.qty = Math.min(maxStock, existing.qty + selectedQty); }
+      else { cart.push({ name: PRODUCT_NAME, price: PRODUCT_PRICE, qty: selectedQty }); }
+      saveCart(cart); renderCart(); openOrderForm();
+    }
+
+    function changeCartQty(name, delta) {
+      let cart = loadCart();
+      const item = cart.find(i => i.name === name);
+      if (!item) return;
+      item.qty += delta;
+      if (item.qty <= 0) cart = cart.filter(i => i.name !== name);
+      saveCart(cart); renderCart(); updateCartBtn();
+    }
+
+    function removeItem(name) { saveCart(loadCart().filter(i => i.name !== name)); renderCart(); updateCartBtn(); }
+    function clearCart() { saveCart([]); renderCart(); updateCartBtn(); }
+
+    function updateCartBtn() {
+      document.getElementById('cartBtn').textContent = `Cart (${loadCart().reduce((a,i)=>a+i.qty,0)})`;
+    }
+
+    function renderCart() {
+      const cart = loadCart();
+      const el = document.getElementById('cItems');
+      const footer = document.getElementById('cFooter');
+      updateCartBtn();
+      if (cart.length === 0) { el.innerHTML='<div class="c-empty">Your cart is empty</div>'; footer.style.display='none'; return; }
+      footer.style.display = 'block';
+      el.innerHTML = cart.map(i=>`
+        <div class="c-item">
+          <div class="c-item-icon">◇</div>
+          <div class="c-item-info">
+            <div class="c-item-name">${i.name}</div>
+            <div class="c-item-price">PKR ${(i.price*i.qty).toLocaleString()}</div>
+            <div class="c-item-controls">
+              <button class="c-qty-btn" onclick="changeCartQty('${i.name}',-1)">−</button>
+              <span class="c-qty-num">${i.qty}</span>
+              <button class="c-qty-btn" onclick="changeCartQty('${i.name}',1)">+</button>
+              <button class="c-remove" onclick="removeItem('${i.name}')">✕ remove</button>
+            </div>
+          </div>
+        </div>`).join('');
+      document.getElementById('cTotal').textContent = 'PKR ' + cart.reduce((a,i)=>a+i.price*i.qty,0).toLocaleString();
+    }
+
+    const openCart  = () => { document.getElementById('c-overlay').classList.add('on'); document.getElementById('c-drawer').classList.add('on'); };
+    const closeCart = () => { document.getElementById('c-overlay').classList.remove('on'); document.getElementById('c-drawer').classList.remove('on'); };
+    document.getElementById('cartBtn').addEventListener('click', openCart);
+    document.getElementById('cClose').addEventListener('click', closeCart);
+    document.getElementById('c-overlay').addEventListener('click', closeCart);
+
+    // ── ORDER FORM ──
+    function openOrderForm() {
+      if (!IS_LOGGED_IN) { document.getElementById('login-overlay').classList.add('on'); return; }
+      const cart = loadCart();
+      if (cart.length === 0) return;
+      const total = cart.reduce((a,i)=>a+i.price*i.qty,0);
+      document.getElementById('om-items-list').innerHTML = cart.map(i=>
+        `<div class="om-summary-item"><span>${i.name} × ${i.qty}</span><span>PKR ${(i.price*i.qty).toLocaleString()}</span></div>`
+      ).join('');
+      document.getElementById('om-total-display').textContent = 'PKR ' + total.toLocaleString();
+      document.getElementById('om-error').textContent = '';
+      document.getElementById('om-loading').style.display = 'none';
+      document.getElementById('order-overlay').classList.add('on');
+      closeCart();
+    }
+
+    function closeOrderForm() { document.getElementById('order-overlay').classList.remove('on'); }
+
+    function submitOrder() {
+      const name    = document.getElementById('om-name').value.trim();
+      const phone   = document.getElementById('om-phone').value.trim();
+      const email   = document.getElementById('om-email').value.trim();
+      const address = document.getElementById('om-address').value.trim();
+      const errEl   = document.getElementById('om-error');
+      const loadEl  = document.getElementById('om-loading');
+      errEl.textContent = '';
+      if (!name)  { errEl.textContent = 'Please enter your name.';  return; }
+      if (!phone) { errEl.textContent = 'Please enter your phone.'; return; }
+      if (!email) { errEl.textContent = 'Please enter your email.'; return; }
+      const cart  = loadCart();
+      const total = cart.reduce((a,i)=>a+i.price*i.qty,0);
+      loadEl.style.display = 'block';
+      fetch('/place-order', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({name,phone,email,address,cart,total})
+      })
+      .then(r=>r.json())
+      .then(data=>{
+        loadEl.style.display = 'none';
+        if (data.success) {
+          closeOrderForm();
+          document.getElementById('sm-order-id').textContent = '#' + data.order_id;
+          document.getElementById('success-overlay').classList.add('on');
+          saveCart([]); renderCart();
+        } else {
+          errEl.textContent = data.message || 'Something went wrong. Try again.';
+        }
+      })
+      .catch(err=>{ loadEl.style.display='none'; errEl.textContent='Connection error. Please try again.'; });
+    }
+
+    function closeSuccess() { document.getElementById('success-overlay').classList.remove('on'); window.location.href='/'; }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      setTimeout(()=>t.classList.remove('show'), 2500);
+    }
+
+    renderCart();
+  </script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+Flask
+mysql-connector-python
+Werkzeug
+gunicorn
+python-dotenv
+flask-dance
+flask-mail

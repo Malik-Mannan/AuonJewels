@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Malikstore Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,200;0,300;0,400;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--gold:#c9a84c;--gold-light:#e8d08a;--ink:#0a0602;--ink2:#120d04;--cream:#f5f0e8;--muted:#8a7e6a;--sidebar:180px;}
+body{font-family:'DM Sans',sans-serif;background:var(--ink);color:#d4c9b0;display:flex;min-height:100vh;overflow-x:hidden;}
+
+/* ── SIDEBAR ── */
+.sidebar{width:var(--sidebar);background:var(--ink2);border-right:1px solid rgba(201,168,76,.12);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:100;padding:2rem 0;}
+.s-logo{text-align:center;padding:0 1rem 2rem;border-bottom:1px solid rgba(201,168,76,.1);}
+.s-logo-text{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:300;letter-spacing:.15em;color:var(--gold);}
+.s-logo-sub{font-size:.55rem;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);margin-top:.2rem;}
+.s-nav{padding:1.5rem 0;flex:1;}
+.s-link{display:flex;align-items:center;gap:.75rem;padding:.7rem 1.5rem;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.35);text-decoration:none;transition:all .2s;border-left:2px solid transparent;}
+.s-link:hover,.s-link.active{color:var(--gold-light);border-left-color:var(--gold);background:rgba(201,168,76,.05);}
+.s-icon{font-size:1rem;width:18px;text-align:center;}
+.s-footer{padding:1rem 1.5rem;border-top:1px solid rgba(201,168,76,.1);}
+.s-store-link{display:block;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);text-decoration:none;text-align:center;padding:.5rem;border:1px solid rgba(201,168,76,.2);transition:all .2s;}
+.s-store-link:hover{color:var(--gold);border-color:var(--gold);}
+
+/* ── MAIN ── */
+.main{margin-left:var(--sidebar);flex:1;padding:2.5rem;}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:2.5rem;}
+.page-title{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;color:var(--gold-light);letter-spacing:.05em;}
+.page-sub{font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-top:.2rem;}
+.topbar-date{font-size:.7rem;color:var(--muted);letter-spacing:.05em;}
+
+/* ── STAT CARDS ── */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem;margin-bottom:2.5rem;}
+.stat-card{background:var(--ink2);border:1px solid rgba(201,168,76,.1);padding:1.5rem;position:relative;overflow:hidden;transition:border-color .3s;}
+.stat-card:hover{border-color:rgba(201,168,76,.35);}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0;transition:opacity .3s;}
+.stat-card:hover::before{opacity:1;}
+.stat-label{font-size:.6rem;letter-spacing:.25em;text-transform:uppercase;color:var(--muted);margin-bottom:.8rem;}
+.stat-num{font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:200;color:var(--gold-light);line-height:1;}
+.stat-num span{font-size:1rem;font-family:'DM Sans',sans-serif;font-weight:300;}
+.stat-icon{position:absolute;bottom:1rem;right:1.2rem;font-size:2rem;opacity:.08;}
+
+/* ── QUICK ACTIONS ── */
+.section-title{font-size:.65rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:1.2rem;}
+.actions{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:2.5rem;}
+.action-btn{display:block;padding:1.2rem 1.5rem;background:var(--ink2);border:1px solid rgba(201,168,76,.12);text-decoration:none;transition:all .25s;position:relative;overflow:hidden;}
+.action-btn:hover{border-color:var(--gold);background:rgba(201,168,76,.05);}
+.action-btn-icon{font-size:1.5rem;margin-bottom:.5rem;}
+.action-btn-label{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gold-light);}
+.action-btn-desc{font-size:.65rem;color:var(--muted);margin-top:.2rem;}
+
+/* ── RECENT ORDERS TABLE ── */
+.table-wrap{background:var(--ink2);border:1px solid rgba(201,168,76,.1);overflow:hidden;}
+table{width:100%;border-collapse:collapse;}
+thead{background:rgba(201,168,76,.05);}
+th{padding:.8rem 1.2rem;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);text-align:left;border-bottom:1px solid rgba(201,168,76,.08);}
+td{padding:.9rem 1.2rem;font-size:.78rem;color:#c4b99e;border-bottom:1px solid rgba(255,255,255,.03);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(201,168,76,.03);}
+.badge{display:inline-block;padding:.2rem .7rem;font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;border-radius:2px;}
+.badge-pending{background:rgba(201,168,76,.15);color:var(--gold);}
+.badge-delivered{background:rgba(80,180,100,.15);color:#6dd48a;}
+.badge-cancelled{background:rgba(200,80,80,.15);color:#e08888;}
+.badge-confirmed{background:rgba(80,130,200,.15);color:#88b4e0;}
+
+/* ── DIVIDER LINE ── */
+.gold-line{height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.3),transparent);margin:2rem 0;}
+
+@keyframes fadeIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.stat-card,.action-btn,.table-wrap{animation:fadeIn .5s ease both;}
+.stat-card:nth-child(1){animation-delay:.05s}
+.stat-card:nth-child(2){animation-delay:.1s}
+.stat-card:nth-child(3){animation-delay:.15s}
+.stat-card:nth-child(4){animation-delay:.2s}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="s-logo">
+    <div class="s-logo-text">Malikstore</div>
+    <div class="s-logo-sub">Admin Panel</div>
+  </div>
+  <nav class="s-nav">
+    <a href="/admin" class="s-link active"><span class="s-icon">◈</span> Dashboard</a>
+    <a href="/admin/products" class="s-link"><span class="s-icon">◇</span> Products</a>
+    <a href="/admin/orders" class="s-link"><span class="s-icon">◎</span> Orders</a>
+    <a href="/admin/customers" class="s-link"><span class="s-icon">○</span> Customers</a>
+    <a href="/admin/story-images" class="s-link"><span class="s-icon">◉</span> Story Images</a>
+  </nav>
+  <div class="s-footer">
+    <a href="/" class="s-store-link">↗ View Store</a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="topbar">
+    <div>
+      <div class="page-title">Dashboard</div>
+      <div class="page-sub">Welcome back, Malik</div>
+    </div>
+    <div class="topbar-date" id="dateEl"></div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat-card">
+      <div class="stat-label">Total Products</div>
+      <div class="stat-num">{{ total_products }}</div>
+      <div class="stat-icon">◇</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Total Orders</div>
+      <div class="stat-num">{{ total_orders }}</div>
+      <div class="stat-icon">◎</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Customers</div>
+      <div class="stat-num">{{ total_customers }}</div>
+      <div class="stat-icon">○</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Revenue (Delivered)</div>
+      <div class="stat-num"><span>PKR </span>{{ "%.0f"|format(revenue) }}</div>
+      <div class="stat-icon">◈</div>
+    </div>
+  </div>
+
+  <!-- QUICK ACTIONS -->
+  <div class="section-title">Quick Actions</div>
+  <div class="actions">
+    <a href="/admin/products/add" class="action-btn">
+      <div class="action-btn-icon">＋</div>
+      <div class="action-btn-label">Add Product</div>
+      <div class="action-btn-desc">Add new jewellery item</div>
+    </a>
+    <a href="/admin/orders" class="action-btn">
+      <div class="action-btn-icon">◎</div>
+      <div class="action-btn-label">Manage Orders</div>
+      <div class="action-btn-desc">View & update order status</div>
+    </a>
+    <a href="/admin/customers" class="action-btn">
+      <div class="action-btn-icon">○</div>
+      <div class="action-btn-label">Customers</div>
+      <div class="action-btn-desc">Browse customer list</div>
+    </a>
+  </div>
+
+  <div class="gold-line"></div>
+
+  <!-- RECENT ORDERS -->
+  <div class="section-title">Recent Orders</div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Customer</th>
+          <th>Total</th>
+          <th>Status</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if recent_orders %}
+          {% for o in recent_orders %}
+          <tr>
+            <td>#{{ o.ID }}</td>
+            <td>{{ o.Full_Name }}</td>
+            <td>PKR {{ "%.0f"|format(o.Total) }}</td>
+            <td>
+              <span class="badge badge-{{ o.Status }}">{{ o.Status }}</span>
+            </td>
+            <td>{{ o.Ordered_at.strftime('%d %b %Y') }}</td>
+          </tr>
+          {% endfor %}
+        {% else %}
+          <tr><td colspan="5" style="text-align:center;color:var(--muted);padding:2rem;">No orders yet</td></tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<script>
+const d = new Date();
+document.getElementById('dateEl').textContent = d.toLocaleDateString('en-PK', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
+</script>
+</body>
+</html>

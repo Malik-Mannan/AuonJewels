@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Customers — Malikstore Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,200;0,300;0,400;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--gold:#c9a84c;--gold-light:#e8d08a;--ink:#0a0602;--ink2:#120d04;--muted:#8a7e6a;--sidebar:180px;}
+body{font-family:'DM Sans',sans-serif;background:var(--ink);color:#d4c9b0;display:flex;min-height:100vh;}
+.sidebar{width:var(--sidebar);background:var(--ink2);border-right:1px solid rgba(201,168,76,.12);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:100;padding:2rem 0;}
+.s-logo{text-align:center;padding:0 1rem 2rem;border-bottom:1px solid rgba(201,168,76,.1);}
+.s-logo-text{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:300;letter-spacing:.15em;color:var(--gold);}
+.s-logo-sub{font-size:.55rem;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);margin-top:.2rem;}
+.s-nav{padding:1.5rem 0;flex:1;}
+.s-link{display:flex;align-items:center;gap:.75rem;padding:.7rem 1.5rem;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.35);text-decoration:none;transition:all .2s;border-left:2px solid transparent;}
+.s-link:hover,.s-link.active{color:var(--gold-light);border-left-color:var(--gold);background:rgba(201,168,76,.05);}
+.s-icon{font-size:1rem;width:18px;text-align:center;}
+.s-footer{padding:1rem 1.5rem;border-top:1px solid rgba(201,168,76,.1);}
+.s-store-link{display:block;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);text-decoration:none;text-align:center;padding:.5rem;border:1px solid rgba(201,168,76,.2);transition:all .2s;}
+.s-store-link:hover{color:var(--gold);border-color:var(--gold);}
+.main{margin-left:var(--sidebar);flex:1;padding:2.5rem;}
+.page-title{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;color:var(--gold-light);margin-bottom:.3rem;}
+.page-sub{font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:2rem;}
+.table-wrap{background:var(--ink2);border:1px solid rgba(201,168,76,.1);}
+table{width:100%;border-collapse:collapse;}
+thead{background:rgba(201,168,76,.05);}
+th{padding:.8rem 1.2rem;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);text-align:left;border-bottom:1px solid rgba(201,168,76,.08);}
+td{padding:.85rem 1.2rem;font-size:.78rem;color:#c4b99e;border-bottom:1px solid rgba(255,255,255,.03);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(201,168,76,.03);}
+.wa-link{display:inline-block;padding:.25rem .7rem;background:rgba(37,211,102,.12);color:#25d166;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;border:1px solid rgba(37,211,102,.2);transition:all .2s;}
+.wa-link:hover{background:rgba(37,211,102,.25);}
+.avatar{width:30px;height:30px;border-radius:50%;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.25);display:inline-flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:.9rem;color:var(--gold);margin-right:.5rem;vertical-align:middle;}
+</style>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="s-logo">
+    <div class="s-logo-text">Malikstore</div>
+    <div class="s-logo-sub">Admin Panel</div>
+  </div>
+  <nav class="s-nav">
+    <a href="/admin" class="s-link"><span class="s-icon">◈</span> Dashboard</a>
+    <a href="/admin/products" class="s-link"><span class="s-icon">◇</span> Products</a>
+    <a href="/admin/orders" class="s-link"><span class="s-icon">◎</span> Orders</a>
+    <a href="/admin/customers" class="s-link active"><span class="s-icon">○</span> Customers</a>
+    <a href="/admin/story-images" class="s-link"><span class="s-icon">◉</span> Story Images</a>
+  </nav>
+  <div class="s-footer">
+    <a href="/" class="s-store-link">↗ View Store</a>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="page-title">Customers</div>
+  <div class="page-sub">{{ customers|length }} registered customers</div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Address</th>
+          <th>Joined</th>
+          <th>WhatsApp</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for c in customers %}
+        <tr>
+          <td style="color:var(--muted)">#{{ c.ID }}</td>
+          <td>
+            <span class="avatar">{{ c.Full_Name[0] }}</span>{{ c.Full_Name }}
+          </td>
+          <td>{{ c.Email or '—' }}</td>
+          <td>{{ c.Phone or '—' }}</td>
+          <td style="color:var(--muted);font-size:.72rem;">{{ (c.Address or '—')[:40] }}</td>
+          <td>{{ c.created_at.strftime('%d %b %Y') }}</td>
+          <td>
+            {% if c.Phone %}
+            <a href="https://wa.me/92{{ c.Phone|replace('0','',1) }}" target="_blank" class="wa-link">WhatsApp</a>
+            {% else %}—{% endif %}
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="7" style="text-align:center;color:var(--muted);padding:2rem;">No customers yet</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</main>
+</body>
+</html>

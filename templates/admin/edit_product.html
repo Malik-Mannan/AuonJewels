@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Edit Product – Malikstore Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--gold:#c9a84c;--gold-light:#e8d08a;--ink:#0a0602;--muted:#8a7e6a;}
+    body{font-family:'DM Sans',sans-serif;background:#0f0a03;color:#d4c9b0;min-height:100vh;}
+    nav{padding:1.2rem 2.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(201,168,76,.1);background:#0a0602;}
+    .nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:300;letter-spacing:.15em;color:var(--gold);text-decoration:none;}
+    .nav-back{font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.3);text-decoration:none;transition:color .2s;}
+    .nav-back:hover{color:var(--gold);}
+    .container{max-width:680px;margin:3rem auto;padding:0 2rem;}
+    .page-eyebrow{font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem;}
+    .page-title{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;color:#e8ddc8;margin-bottom:2.5rem;}
+    .card{background:#0a0602;border:1px solid rgba(201,168,76,.12);padding:2.5rem;}
+    .field{display:flex;flex-direction:column;gap:.4rem;margin-bottom:1.4rem;}
+    .label{font-size:.6rem;letter-spacing:.25em;text-transform:uppercase;color:var(--muted);}
+    .input{background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.12);color:#d4c9b0;padding:.75rem 1rem;font-size:.88rem;font-family:'DM Sans',sans-serif;outline:none;width:100%;transition:border-color .2s;}
+    .input:focus{border-color:rgba(201,168,76,.45);}
+    textarea.input{resize:vertical;min-height:90px;}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;}
+    .current-img{display:flex;align-items:center;gap:1rem;margin-bottom:.6rem;}
+    .current-img img{width:60px;height:60px;object-fit:cover;border:1px solid rgba(201,168,76,.15);}
+    .current-img span{font-size:.72rem;color:var(--muted);}
+    .file-input{background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.12);color:var(--muted);padding:.65rem 1rem;font-size:.78rem;font-family:'DM Sans',sans-serif;width:100%;cursor:pointer;}
+    .file-input::file-selector-button{background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.2);color:var(--gold);font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;padding:.35rem .8rem;cursor:pointer;font-family:'DM Sans',sans-serif;margin-right:1rem;}
+    .divider{height:1px;background:rgba(201,168,76,.08);margin:1.5rem 0;}
+    .actions{display:flex;gap:1rem;margin-top:1.8rem;}
+    .btn-save{flex:1;padding:.9rem;background:var(--gold);color:var(--ink);font-size:.72rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;}
+    .btn-save:hover{background:var(--gold-light);}
+    .btn-cancel{padding:.9rem 1.5rem;background:none;border:1px solid rgba(255,255,255,.1);color:var(--muted);font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;display:flex;align-items:center;transition:all .2s;}
+    .btn-cancel:hover{border-color:rgba(200,60,60,.3);color:#e08080;}
+    .flash{background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2);color:var(--gold-light);padding:.75rem 1rem;font-size:.78rem;margin-bottom:1.5rem;}
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="/admin" class="nav-logo">Malikstore Admin</a>
+    <a href="/admin/products" class="nav-back">← Back to Products</a>
+  </nav>
+
+  
+  <div class="container">
+    <div class="page-eyebrow">Admin Panel</div>
+    <div class="page-title">Edit Product</div>
+
+    {% with messages = get_flashed_messages() %}
+      {% for msg in messages %}
+        <div class="flash">{{ msg }}</div>
+      {% endfor %}
+    {% endwith %}
+
+    <div class="card">
+      <form method="POST" enctype="multipart/form-data">
+
+        <div class="field">
+          <label class="label">Product Name *</label>
+          <input class="input" type="text" name="name" value="{{ product.Name }}" required/>
+        </div>
+
+        <div class="field">
+          <label class="label">Description</label>
+          <textarea class="input" name="description">{{ product.Description or '' }}</textarea>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label class="label">Material</label>
+            <input class="input" type="text" name="material" value="{{ product.material or '' }}"/>
+          </div>
+          <div class="field">
+            <label class="label">Category</label>
+            <input class="input" type="text" name="category" value="{{ product.category or '' }}"/>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label class="label">Price (PKR) *</label>
+            <input class="input" type="number" name="price" value="{{ product.price }}" min="0" required/>
+          </div>
+          <div class="field">
+            <label class="label">Stock *</label>
+            <input class="input" type="number" name="stock" value="{{ product.Stock }}" min="0" required/>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="field">
+          <label class="label">Product Image</label>
+          {% if product.image %}
+          <div class="current-img">
+            <div class="divider"></div>
+
+<div class="field">
+  <label class="label">Gallery Image 1</label>
+  {% if gallery and gallery|length >= 1 %}
+  <div class="current-img">
+    <img src="/static/images/{{ gallery[0].image }}" alt="Gallery 1" onerror="this.style.display='none'">
+    <span>Current: {{ gallery[0].image }}</span>
+  </div>
+  {% endif %}
+  <input class="file-input" type="file" name="gallery_1" accept="image/*"/>
+</div>
+
+<div class="field">
+  <label class="label">Gallery Image 2</label>
+  {% if gallery and gallery|length >= 2 %}
+  <div class="current-img">
+    <img src="/static/images/{{ gallery[1].image }}" alt="Gallery 2" onerror="this.style.display='none'">
+    <span>Current: {{ gallery[1].image }}</span>
+  </div>
+  {% endif %}
+  <input class="file-input" type="file" name="gallery_2" accept="image/*"/>
+</div>
+
+<div class="field">
+  <label class="label">Gallery Image 3</label>
+  {% if gallery and gallery|length >= 3 %}
+  <div class="current-img">
+    <img src="/static/images/{{ gallery[2].image }}" alt="Gallery 3" onerror="this.style.display='none'">
+    <span>Current: {{ gallery[2].image }}</span>
+  </div>
+  {% endif %}
+  <input class="file-input" type="file" name="gallery_3" accept="image/*"/>
+</div>
+            <span>Current: {{ product.image }}</span>
+          </div>
+          {% endif %}
+          <input class="file-input" type="file" name="image" accept="image/*"/>
+          <span style="font-size:.62rem;color:var(--muted);margin-top:.3rem;">Leave empty to keep current image</span>
+        </div>
+
+        <div class="actions">
+          <button class="btn-save" type="submit">Save Changes</button>
+          <a href="/admin/products" class="btn-cancel">Cancel</a>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+</body>
+</html>

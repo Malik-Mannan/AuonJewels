@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Story Images — Malikstore Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,200;0,300;0,400;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--gold:#c9a84c;--gold-light:#e8d08a;--ink:#0a0602;--ink2:#120d04;--muted:#8a7e6a;--sidebar:180px;}
+body{font-family:'DM Sans',sans-serif;background:var(--ink);color:#d4c9b0;display:flex;min-height:100vh;}
+
+/* SIDEBAR */
+.sidebar{width:var(--sidebar);background:var(--ink2);border-right:1px solid rgba(201,168,76,.12);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:100;padding:2rem 0;}
+.s-logo{text-align:center;padding:0 1rem 2rem;border-bottom:1px solid rgba(201,168,76,.1);}
+.s-logo-text{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:300;letter-spacing:.15em;color:var(--gold);}
+.s-logo-sub{font-size:.55rem;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);margin-top:.2rem;}
+.s-nav{padding:1.5rem 0;flex:1;}
+.s-link{display:flex;align-items:center;gap:.75rem;padding:.7rem 1.5rem;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.35);text-decoration:none;transition:all .2s;border-left:2px solid transparent;}
+.s-link:hover,.s-link.active{color:var(--gold-light);border-left-color:var(--gold);background:rgba(201,168,76,.05);}
+.s-icon{font-size:1rem;width:18px;text-align:center;}
+.s-footer{padding:1rem 1.5rem;border-top:1px solid rgba(201,168,76,.1);}
+.s-store-link{display:block;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);text-decoration:none;text-align:center;padding:.5rem;border:1px solid rgba(201,168,76,.2);transition:all .2s;}
+.s-store-link:hover{color:var(--gold);border-color:var(--gold);}
+
+/* MAIN */
+.main{margin-left:var(--sidebar);flex:1;padding:2.5rem;}
+.page-title{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;color:var(--gold-light);margin-bottom:.3rem;}
+.page-sub{font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:2rem;}
+.flash{padding:.75rem 1.2rem;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.25);color:var(--gold-light);font-size:.78rem;margin-bottom:1.5rem;}
+
+/* CARDS */
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;}
+.card{background:var(--ink2);border:1px solid rgba(201,168,76,.1);padding:1.5rem;}
+.card-title{font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--gold-light);margin-bottom:.3rem;}
+.card-sub{font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:1.2rem;}
+
+/* IMAGE AREAS */
+.current-img{width:100%;height:180px;object-fit:cover;border:1px solid rgba(201,168,76,.15);margin-bottom:1rem;display:block;}
+.no-img{width:100%;height:180px;background:rgba(201,168,76,.04);border:1px dashed rgba(201,168,76,.15);display:flex;align-items:center;justify-content:center;margin-bottom:1rem;font-size:2.5rem;opacity:.3;}
+.preview-img{display:none;width:100%;height:180px;object-fit:cover;border:1px solid rgba(201,168,76,.2);margin-bottom:1rem;}
+
+/* UPLOAD BOX */
+.upload-box{border:1px dashed rgba(201,168,76,.25);padding:1.2rem;text-align:center;cursor:pointer;transition:all .2s;background:rgba(201,168,76,.02);}
+.upload-box:hover{border-color:rgba(201,168,76,.6);background:rgba(201,168,76,.05);}
+.upload-icon{font-size:1.5rem;margin-bottom:.4rem;}
+.upload-text{font-size:.7rem;letter-spacing:.1em;color:var(--gold-light);margin-bottom:.2rem;}
+.upload-sub{font-size:.6rem;color:var(--muted);}
+
+/* BUTTON */
+.btn-submit{display:block;margin-top:2rem;max-width:400px;width:100%;padding:.85rem;background:var(--gold);color:var(--ink);font-size:.72rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;}
+.btn-submit:hover{background:var(--gold-light);}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="s-logo">
+    <div class="s-logo-text">Malikstore</div>
+    <div class="s-logo-sub">Admin Panel</div>
+  </div>
+  <nav class="s-nav">
+    <a href="/admin" class="s-link"><span class="s-icon">◈</span> Dashboard</a>
+    <a href="/admin/products" class="s-link"><span class="s-icon">◇</span> Products</a>
+    <a href="/admin/orders" class="s-link"><span class="s-icon">◎</span> Orders</a>
+    <a href="/admin/customers" class="s-link"><span class="s-icon">○</span> Customers</a>
+    <a href="/admin/story-images" class="s-link active"><span class="s-icon">🖼</span> Story Images</a>
+  </nav>
+  <div class="s-footer">
+    <a href="/" class="s-store-link">↗ View Store</a>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="page-title">Story Images</div>
+  <div class="page-sub">Upload images for the 3 story sections on your homepage</div>
+
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      {% for m in messages %}<div class="flash">✓ {{ m }}</div>{% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <form method="POST" action="/admin/story-images" enctype="multipart/form-data">
+    <div class="cards">
+
+      <!-- EARRINGS -->
+      <div class="card">
+        <div class="card-title">Earrings</div>
+        <div class="card-sub">Section 01</div>
+        <img src="/static/images/earrings-story.jpg" class="current-img"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+        <div class="no-img">💍</div>
+        <img id="prev-earrings" class="preview-img" alt=""/>
+        <div class="upload-box" onclick="document.getElementById('inp-earrings').click()">
+          <div class="upload-icon">📁</div>
+          <div class="upload-text">Click to browse</div>
+          <div class="upload-sub" id="sub-earrings">JPG, PNG, WEBP</div>
+        </div>
+        <input type="file" id="inp-earrings" name="earrings" accept="image/*"
+               style="display:none;" onchange="preview(this,'earrings')"/>
+      </div>
+
+      <!-- NECKLACES -->
+      <div class="card">
+        <div class="card-title">Necklaces</div>
+        <div class="card-sub">Section 02</div>
+        <img src="/static/images/necklaces-story.jpg" class="current-img"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+        <div class="no-img">📿</div>
+        <img id="prev-necklaces" class="preview-img" alt=""/>
+        <div class="upload-box" onclick="document.getElementById('inp-necklaces').click()">
+          <div class="upload-icon">📁</div>
+          <div class="upload-text">Click to browse</div>
+          <div class="upload-sub" id="sub-necklaces">JPG, PNG, WEBP</div>
+        </div>
+        <input type="file" id="inp-necklaces" name="necklaces" accept="image/*"
+               style="display:none;" onchange="preview(this,'necklaces')"/>
+      </div>
+
+      <!-- BRACELETS -->
+      <div class="card">
+        <div class="card-title">Bracelets</div>
+        <div class="card-sub">Section 03</div>
+        <img src="/static/images/bracelets-story.jpg" class="current-img"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+        <div class="no-img">✨</div>
+        <img id="prev-bracelets" class="preview-img" alt=""/>
+        <div class="upload-box" onclick="document.getElementById('inp-bracelets').click()">
+          <div class="upload-icon">📁</div>
+          <div class="upload-text">Click to browse</div>
+          <div class="upload-sub" id="sub-bracelets">JPG, PNG, WEBP</div>
+        </div>
+        <input type="file" id="inp-bracelets" name="bracelets" accept="image/*"
+               style="display:none;" onchange="preview(this,'bracelets')"/>
+      </div>
+
+    </div>
+    <button type="submit" class="btn-submit">💾 Save All Images</button>
+  </form>
+</main>
+
+<script>
+function preview(input, section){
+  const file = input.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const prev = document.getElementById('prev-' + section);
+    prev.src = e.target.result;
+    prev.style.display = 'block';
+    document.getElementById('sub-' + section).textContent = '✓ ' + file.name + ' · ' + (file.size/1024).toFixed(0) + ' KB';
+    document.querySelector('#inp-' + section).closest('.card').querySelector('.upload-box').style.borderColor = 'rgba(201,168,76,.6)';
+  };
+  reader.readAsDataURL(file);
+}
+</script>
+</body>
+</html>

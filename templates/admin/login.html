@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Admin Login — Malikstore</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--gold:#c9a84c;--gold-light:#e8d08a;--ink:#0a0602;--ink2:#120d04;}
+body{font-family:'DM Sans',sans-serif;background:var(--ink);color:#d4c9b0;min-height:100vh;display:flex;align-items:center;justify-content:center;}
+.wrap{width:100%;max-width:380px;padding:2rem;}
+.logo{text-align:center;margin-bottom:2.5rem;}
+.logo h1{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:300;letter-spacing:.2em;color:var(--gold);}
+.logo p{font-size:.6rem;letter-spacing:.35em;text-transform:uppercase;color:rgba(201,168,76,.4);margin-top:.3rem;}
+.card{background:var(--ink2);border:1px solid rgba(201,168,76,.12);padding:2.5rem;}
+.card h2{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:300;color:var(--gold-light);margin-bottom:.3rem;}
+.card p{font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.25);margin-bottom:2rem;}
+.error{background:rgba(200,60,60,.1);border:1px solid rgba(200,60,60,.3);color:#e08080;font-size:.78rem;padding:.8rem 1rem;margin-bottom:1.5rem;}
+.field{margin-bottom:1.4rem;}
+.field label{display:block;font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:.6rem;}
+.field input{width:100%;padding:.85rem 1rem;background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.15);color:var(--gold-light);font-family:'DM Sans',sans-serif;font-size:.88rem;outline:none;transition:border-color .2s;}
+.field input:focus{border-color:rgba(201,168,76,.5);}
+.field input::placeholder{color:rgba(255,255,255,.15);}
+.btn{width:100%;padding:1rem;background:var(--gold);color:var(--ink);font-family:'DM Sans',sans-serif;font-size:.75rem;font-weight:600;letter-spacing:.25em;text-transform:uppercase;border:none;cursor:pointer;transition:background .2s;margin-top:.5rem;}
+.btn:hover{background:var(--gold-light);}
+.back{display:block;text-align:center;margin-top:1.5rem;font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.2);text-decoration:none;transition:color .2s;}
+.back:hover{color:var(--gold);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="logo">
+  <img src="/static/images/logo.png" height="60" style="margin-bottom:.8rem;">
+  <h1>Auon Jewels</h1>
+  <p>Admin Panel</p>
+</div>
+  <div class="card">
+    <h2>Welcome back</h2>
+    <p>Sign in to continue</p>
+    {% if error %}<div class="error">⚠ {{ error }}</div>{% endif %}
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}{% for m in messages %}<div class="error" style="background:rgba(201,168,76,.1);border-color:rgba(201,168,76,.3);color:var(--gold-light);">✓ {{ m }}</div>{% endfor %}{% endif %}
+    {% endwith %}
+    <form method="POST">
+      <div class="field">
+        <label>Username</label>
+        <input type="text" name="username" placeholder="Enter username" required autofocus/>
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" name="password" placeholder="Enter password" required/>
+      </div>
+      <button type="submit" class="btn">Login →</button>
+    </form>
+  </div>
+  <a href="/" class="back">← Back to Store</a>
+</div>
+</body>
+</html>

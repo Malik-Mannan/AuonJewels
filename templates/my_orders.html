@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>My Orders – Auon Store</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,200;0,300;0,400;1,200;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--gold:#c9a84c;--gold-light:#e8d08a;--ink:#0a0602;--muted:#8a7e6a;}
+    body{font-family:'DM Sans',sans-serif;background:var(--ink);color:#d4c9b0;min-height:100vh;}
+
+    nav{padding:1.5rem 3.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(201,168,76,.08);position:sticky;top:0;background:rgba(10,6,2,.95);backdrop-filter:blur(10px);z-index:100;}
+    .nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:300;letter-spacing:.18em;color:#fff;text-decoration:none;}
+    .nav-logo span{color:var(--gold);}
+    .nav-right{display:flex;align-items:center;gap:1.5rem;}
+    .nav-link{font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.4);text-decoration:none;transition:color .3s;}
+    .nav-link:hover{color:var(--gold);}
+    .nav-logout{font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.3);text-decoration:none;border:1px solid rgba(255,255,255,.1);padding:.45rem 1rem;transition:all .3s;}
+    .nav-logout:hover{border-color:#e08080;color:#e08080;}
+
+    .container{max-width:900px;margin:0 auto;padding:3rem 2rem;}
+    .page-eyebrow{font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem;}
+    .page-title{font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:200;color:#e8ddc8;margin-bottom:.5rem;}
+    .page-sub{font-size:.75rem;color:var(--muted);margin-bottom:3rem;}
+
+    .empty{text-align:center;padding:5rem 2rem;}
+    .empty-icon{font-size:3rem;opacity:.2;margin-bottom:1rem;}
+    .empty-text{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:300;color:#e8ddc8;margin-bottom:.5rem;}
+    .empty-sub{font-size:.78rem;color:var(--muted);margin-bottom:2rem;}
+    .btn-shop{display:inline-block;padding:.8rem 2rem;background:var(--gold);color:var(--ink);font-size:.7rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;text-decoration:none;transition:all .3s;}
+    .btn-shop:hover{background:var(--gold-light);}
+
+    .order-card{background:#0f0a03;border:1px solid rgba(201,168,76,.1);margin-bottom:1.5rem;transition:border-color .3s;}
+    .order-card:hover{border-color:rgba(201,168,76,.25);}
+    .order-header{padding:1.2rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(201,168,76,.06);flex-wrap:wrap;gap:1rem;}
+    .order-id{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:300;color:var(--gold-light);}
+    .order-meta{display:flex;align-items:center;gap:2rem;flex-wrap:wrap;}
+    .order-date{font-size:.68rem;letter-spacing:.1em;color:var(--muted);}
+    .order-total{font-size:.85rem;color:#d4c9b0;}
+    .order-total span{color:var(--gold-light);font-family:'Cormorant Garamond',serif;font-size:1rem;}
+
+    .status{display:inline-block;padding:.2rem .8rem;font-size:.58rem;letter-spacing:.15em;text-transform:uppercase;font-weight:500;}
+    .status.pending{background:rgba(232,168,76,.1);color:#e8a84c;border:1px solid rgba(232,168,76,.2);}
+    .status.processing{background:rgba(76,168,232,.1);color:#4ca8e8;border:1px solid rgba(76,168,232,.2);}
+    .status.shipped{background:rgba(138,76,232,.1);color:#8a4ce8;border:1px solid rgba(138,76,232,.2);}
+    .status.delivered{background:rgba(76,200,120,.1);color:#4cc878;border:1px solid rgba(76,200,120,.2);}
+    .status.cancelled{background:rgba(200,76,76,.1);color:#e08080;border:1px solid rgba(200,76,76,.2);}
+
+    .order-items{padding:1.2rem 1.5rem;}
+    .order-items-title{font-size:.58rem;letter-spacing:.25em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem;}
+    .item-row{display:flex;align-items:center;gap:1rem;padding:.6rem 0;border-bottom:1px solid rgba(255,255,255,.03);}
+    .item-row:last-child{border-bottom:none;}
+    .item-img{width:44px;height:44px;background:linear-gradient(135deg,#120d04,#1a1208);border:1px solid rgba(201,168,76,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;}
+    .item-img img{width:100%;height:100%;object-fit:cover;}
+    .item-img-icon{font-size:1.2rem;opacity:.3;}
+    .item-info{flex:1;}
+    .item-name{font-size:.82rem;color:#d4c9b0;margin-bottom:.15rem;}
+    .item-qty{font-size:.68rem;color:var(--muted);}
+    .item-price{font-size:.82rem;color:var(--gold);}
+
+    .order-footer{padding:.8rem 1.5rem;border-top:1px solid rgba(201,168,76,.06);display:flex;justify-content:flex-end;}
+    .order-total-row{display:flex;align-items:center;gap:1rem;}
+    .total-label{font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);}
+    .total-amount{font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--gold-light);}
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="/" class="nav-logo">Auon<span>store</span></a>
+    <div class="nav-right">
+      <a href="/" class="nav-link">← Back to Shop</a>
+      <a href="{{ url_for('customer_logout') }}" class="nav-logout">Logout</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="page-eyebrow">My Account</div>
+    <div class="page-title">Order History</div>
+    <div class="page-sub">{{ session.customer_name }} · {{ session.customer_email }}</div>
+
+    {% if orders %}
+      {% for order in orders %}
+      <div class="order-card">
+
+        <div class="order-header">
+          <div class="order-id">Order #{{ order.ID }}</div>
+          <div class="order-meta">
+            <div class="order-date">{{ order.Ordered_at.strftime('%d %b %Y, %I:%M %p') if order.Ordered_at else 'Date not available' }}</div>
+            <span class="status {{ order.Status }}">{{ order.Status }}</span>
+          </div>
+        </div>
+
+        <div class="order-items">
+          <div class="order-items-title">Items Ordered</div>
+          {% for item in order.order_items %}
+
+          <div class="item-row">
+            <div class="item-img">
+              {% if item.image %}
+              <img src="/static/images/{{ item.image }}" alt="{{ item.Name }}"
+                   onerror="this.style.display='none';this.nextSibling.style.display='block';">
+              <div class="item-img-icon" style="display:none;">◇</div>
+              {% else %}
+              <div class="item-img-icon">◇</div>
+              {% endif %}
+            </div>
+            <div class="item-info">
+              <div class="item-name">{{ item.Name }}</div>
+              <div class="item-qty">Qty: {{ item.quantity }}</div>
+            </div>
+            <div class="item-price">PKR {{ "%.0f"|format(item.price * item.quantity) }}</div>
+          </div>
+          {% endfor %}
+        </div>
+
+        <div class="order-footer">
+          <div class="order-total-row">
+            <span class="total-label">Order Total</span>
+            <span class="total-amount">PKR {{ "%.0f"|format(order.Total) }}</span>
+          </div>
+        </div>
+
+      </div>
+      {% endfor %}
+
+    {% else %}
+      <div class="empty">
+        <div class="empty-icon">◇</div>
+        <div class="empty-text">No orders yet</div>
+        <div class="empty-sub">You haven't placed any orders yet. Start shopping!</div>
+        <a href="/" class="btn-shop">Browse Collection</a>
+      </div>
+    {% endif %}
+
+  </div>
+
+</body>
+</html>

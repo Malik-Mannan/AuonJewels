@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Orders — Malikstore Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,200;0,300;0,400;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--gold:#c9a84c;--gold-light:#e8d08a;--ink:#0a0602;--ink2:#120d04;--muted:#8a7e6a;--sidebar:180px;}
+body{font-family:'DM Sans',sans-serif;background:var(--ink);color:#d4c9b0;display:flex;min-height:100vh;}
+.sidebar{width:var(--sidebar);background:var(--ink2);border-right:1px solid rgba(201,168,76,.12);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:100;padding:2rem 0;}
+.s-logo{text-align:center;padding:0 1rem 2rem;border-bottom:1px solid rgba(201,168,76,.1);}
+.s-logo-text{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:300;letter-spacing:.15em;color:var(--gold);}
+.s-logo-sub{font-size:.55rem;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);margin-top:.2rem;}
+.s-nav{padding:1.5rem 0;flex:1;}
+.s-link{display:flex;align-items:center;gap:.75rem;padding:.7rem 1.5rem;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.35);text-decoration:none;transition:all .2s;border-left:2px solid transparent;}
+.s-link:hover,.s-link.active{color:var(--gold-light);border-left-color:var(--gold);background:rgba(201,168,76,.05);}
+.s-icon{font-size:1rem;width:18px;text-align:center;}
+.s-footer{padding:1rem 1.5rem;border-top:1px solid rgba(201,168,76,.1);}
+.s-store-link{display:block;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);text-decoration:none;text-align:center;padding:.5rem;border:1px solid rgba(201,168,76,.2);transition:all .2s;}
+.s-store-link:hover{color:var(--gold);border-color:var(--gold);}
+.main{margin-left:var(--sidebar);flex:1;padding:2.5rem;}
+.page-title{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;color:var(--gold-light);margin-bottom:.3rem;}
+.page-sub{font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:2rem;}
+.table-wrap{background:var(--ink2);border:1px solid rgba(201,168,76,.1);}
+table{width:100%;border-collapse:collapse;}
+thead{background:rgba(201,168,76,.05);}
+th{padding:.8rem 1.2rem;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);text-align:left;border-bottom:1px solid rgba(201,168,76,.08);}
+td{padding:.85rem 1.2rem;font-size:.78rem;color:#c4b99e;border-bottom:1px solid rgba(255,255,255,.03);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(201,168,76,.03);}
+.badge{display:inline-block;padding:.2rem .7rem;font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;border-radius:2px;}
+.badge-pending{background:rgba(201,168,76,.15);color:var(--gold);}
+.badge-delivered{background:rgba(80,180,100,.15);color:#6dd48a;}
+.badge-cancelled{background:rgba(200,80,80,.15);color:#e08888;}
+.badge-confirmed{background:rgba(80,130,200,.15);color:#88b4e0;}
+.badge-shipped{background:rgba(150,80,200,.15);color:#c088e0;}
+select.status-sel{background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.15);color:#d4c9b0;padding:.3rem .6rem;font-size:.68rem;font-family:'DM Sans',sans-serif;cursor:pointer;}
+.btn-upd{background:var(--gold);color:var(--ink);border:none;padding:.3rem .8rem;font-size:.62rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.btn-upd:hover{background:var(--gold-light);}
+</style>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="s-logo">
+    <div class="s-logo-text">Malikstore</div>
+    <div class="s-logo-sub">Admin Panel</div>
+  </div>
+  <nav class="s-nav">
+    <a href="/admin" class="s-link"><span class="s-icon">◈</span> Dashboard</a>
+    <a href="/admin/products" class="s-link"><span class="s-icon">◇</span> Products</a>
+    <a href="/admin/orders" class="s-link active"><span class="s-icon">◎</span> Orders</a>
+    <a href="/admin/customers" class="s-link"><span class="s-icon">○</span> Customers</a>
+    <a href="/admin/story-images" class="s-link"><span class="s-icon">◉</span> Story Images</a>
+  </nav>
+  <div class="s-footer">
+    <a href="/" class="s-store-link">↗ View Store</a>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="page-title">Orders</div>
+  <div class="page-sub">{{ orders|length }} total orders</div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Customer</th>
+          <th>Phone</th>
+          <th>Total</th>
+          <th>Status</th>
+          <th>Date</th>
+          <th>Update</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for o in orders %}
+        <tr>
+          <td style="color:var(--muted)">#{{ o.ID }}</td>
+          <td>{{ o.Full_Name }}</td>
+          <td>{{ o.Phone }}</td>
+          <td>PKR {{ "%.0f"|format(o.Total) }}</td>
+          <td><span class="badge badge-{{ o.Status }}">{{ o.Status }}</span></td>
+          <td>{{ o.Ordered_at.strftime('%d %b %Y') }}</td>
+          <td>
+            <form method="POST" action="/admin/orders/status/{{ o.ID }}" style="display:flex;gap:.5rem;">
+              <select name="status" class="status-sel">
+                <option value="pending"   {% if o.Status=='pending'   %}selected{% endif %}>Pending</option>
+                <option value="confirmed" {% if o.Status=='confirmed' %}selected{% endif %}>Confirmed</option>
+                <option value="shipped"   {% if o.Status=='shipped'   %}selected{% endif %}>Shipped</option>
+                <option value="delivered" {% if o.Status=='delivered' %}selected{% endif %}>Delivered</option>
+                <option value="cancelled" {% if o.Status=='cancelled' %}selected{% endif %}>Cancelled</option>
+              </select>
+              <button type="submit" class="btn-upd">Save</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="7" style="text-align:center;color:var(--muted);padding:2rem;">No orders yet</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</main>
+</body>
+</html>

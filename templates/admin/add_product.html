@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Add Product — Malikstore Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,200;0,300;0,400;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--gold:#c9a84c;--gold-light:#e8d08a;--ink:#0a0602;--ink2:#120d04;--muted:#8a7e6a;--sidebar:180px;}
+body{font-family:'DM Sans',sans-serif;background:var(--ink);color:#d4c9b0;display:flex;min-height:100vh;}
+.sidebar{width:var(--sidebar);background:var(--ink2);border-right:1px solid rgba(201,168,76,.12);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:100;padding:2rem 0;}
+.s-logo{text-align:center;padding:0 1rem 2rem;border-bottom:1px solid rgba(201,168,76,.1);}
+.s-logo-text{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:300;letter-spacing:.15em;color:var(--gold);}
+.s-logo-sub{font-size:.55rem;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);margin-top:.2rem;}
+.s-nav{padding:1.5rem 0;flex:1;}
+.s-link{display:flex;align-items:center;gap:.75rem;padding:.7rem 1.5rem;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.35);text-decoration:none;transition:all .2s;border-left:2px solid transparent;}
+.s-link:hover,.s-link.active{color:var(--gold-light);border-left-color:var(--gold);background:rgba(201,168,76,.05);}
+.s-icon{font-size:1rem;width:18px;text-align:center;}
+.s-footer{padding:1rem 1.5rem;border-top:1px solid rgba(201,168,76,.1);}
+.s-store-link{display:block;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);text-decoration:none;text-align:center;padding:.5rem;border:1px solid rgba(201,168,76,.2);transition:all .2s;}
+.s-store-link:hover{color:var(--gold);border-color:var(--gold);}
+.main{margin-left:var(--sidebar);flex:1;padding:2.5rem;}
+.page-title{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;color:var(--gold-light);margin-bottom:.3rem;}
+.page-sub{font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:2rem;}
+.form-card{background:var(--ink2);border:1px solid rgba(201,168,76,.1);padding:2rem;max-width:700px;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;}
+.form-group{display:flex;flex-direction:column;gap:.4rem;}
+.form-group.full{grid-column:1/-1;}
+label{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);}
+input,select,textarea{background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.15);color:#d4c9b0;padding:.7rem 1rem;font-size:.82rem;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s;width:100%;}
+input:focus,select:focus,textarea:focus{border-color:rgba(201,168,76,.5);}
+select option{background:var(--ink2);}
+textarea{resize:vertical;min-height:90px;}
+.btn-submit{margin-top:1.5rem;padding:.8rem 2.5rem;background:var(--gold);color:var(--ink);font-size:.72rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;}
+.btn-submit:hover{background:var(--gold-light);}
+.btn-back{display:inline-block;margin-bottom:1.5rem;font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);text-decoration:none;}
+.btn-back:hover{color:var(--gold);}
+.upload-box{border:1px dashed rgba(201,168,76,.3);padding:2rem;text-align:center;cursor:pointer;transition:all .2s;background:rgba(201,168,76,.02);}
+.upload-box:hover{border-color:rgba(201,168,76,.6);background:rgba(201,168,76,.05);}
+.upload-icon{font-size:2rem;margin-bottom:.5rem;}
+.upload-text{font-size:.75rem;letter-spacing:.1em;color:var(--gold-light);margin-bottom:.3rem;}
+.upload-sub{font-size:.62rem;color:var(--muted);}
+#imagePreview{display:none;max-height:150px;margin-top:1rem;border:1px solid rgba(201,168,76,.2);}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="s-logo">
+    <div class="s-logo-text">Malikstore</div>
+    <div class="s-logo-sub">Admin Panel</div>
+  </div>
+  <nav class="s-nav">
+    <a href="/admin" class="s-link"><span class="s-icon">◈</span> Dashboard</a>
+    <a href="/admin/products" class="s-link active"><span class="s-icon">◇</span> Products</a>
+    <a href="/admin/orders" class="s-link"><span class="s-icon">◎</span> Orders</a>
+    <a href="/admin/customers" class="s-link"><span class="s-icon">○</span> Customers</a>
+    <a href="/admin/story-images" class="s-link"><span class="s-icon">◉</span> Story Images</a>
+  </nav>
+  <div class="s-footer">
+    <a href="/" class="s-store-link">↗ View Store</a>
+  </div>
+</aside>
+
+<main class="main">
+  <a href="/admin/products" class="btn-back">← Back to Products</a>
+  <div class="page-title">Add New Product</div>
+  <div class="page-sub">Fill in the details below</div>
+
+  <div class="form-card">
+    <form method="POST" action="/admin/products/add" enctype="multipart/form-data">
+      <div class="form-grid">
+
+        <!-- PRODUCT NAME — full width at top -->
+        <div class="form-group full">
+          <label>Product Name</label>
+          <input type="text" name="name" placeholder="e.g. Kundan Jhumka Earrings" required/>
+        </div>
+
+        <!-- CATEGORY -->
+        <div class="form-group">
+          <label>Category</label>
+          <select name="category" required>
+            <option value="">Select category</option>
+            <option>Earrings</option>
+            <option>Necklaces</option>
+            <option>Bangles</option>
+            <option>Rings</option>
+            <option>Maang Tikka</option>
+            <option>Bracelets</option>
+            <option>Sets</option>
+          </select>
+        </div>
+
+        <!-- MATERIAL -->
+        <div class="form-group">
+          <label>Material</label>
+          <select name="material">
+            <option value="">Select material</option>
+            <option>Kundan</option>
+            <option>Oxidised</option>
+            <option>Meenakari</option>
+            <option>Pearl</option>
+            <option>Stone</option>
+            <option>Antique</option>
+            <option>Acrylic</option>
+          </select>
+        </div>
+
+        <!-- COLOR -->
+        <div class="form-group">
+          <label>Color</label>
+          <input type="text" name="color" placeholder="e.g. Gold, Silver, Multicolor"/>
+        </div>
+
+        <!-- PRICE -->
+        <div class="form-group">
+          <label>Price (PKR)</label>
+          <input type="number" name="price" placeholder="e.g. 850" step="0.01" required/>
+        </div>
+
+        <!-- STOCK -->
+        <div class="form-group full">
+          <label>Stock Quantity</label>
+          <input type="number" name="stock" placeholder="e.g. 20" value="0"/>
+        </div>
+
+        <!-- IMAGE UPLOAD — only this, no text field -->
+        <div class="form-group full">
+          <label>Product Image</label>
+          <div class="upload-box" onclick="document.getElementById('imageInput').click()">
+            <div class="upload-icon">📁</div>
+            <div class="upload-text">Click to browse image</div>
+            <div class="upload-sub">JPG, PNG, WEBP supported</div>
+            <img id="imagePreview" alt=""/>
+          </div>
+          <input type="file" id="imageInput" name="image" accept="image/*" style="display:none;" onchange="previewImage(this)"/>
+        </div>
+
+        <!-- DESCRIPTION -->
+        <div class="form-group full">
+          <label>Description</label>
+          <textarea name="description" placeholder="Describe the product..."></textarea>
+        </div>
+
+      </div>
+      <button type="submit" class="btn-submit">Add Product</button>
+    </form>
+  </div>
+</main>
+
+<script>
+function previewImage(input){
+  const file = input.files[0];
+  if(file){
+    const reader = new FileReader();
+    reader.onload = e => {
+      const preview = document.getElementById('imagePreview');
+      preview.src = e.target.result;
+      preview.style.display = 'block';
+      document.querySelector('.upload-text').textContent = '✓ ' + file.name;
+      document.querySelector('.upload-sub').textContent = (file.size/1024).toFixed(1) + ' KB';
+      document.querySelector('.upload-box').style.borderColor = 'rgba(201,168,76,.6)';
+    }
+    reader.readAsDataURL(file);
+  }
+}
+</script>
+</body>
+</html>

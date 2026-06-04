@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Login – Malik Store</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,200;0,300;1,200&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'DM Sans',sans-serif;background:#0a0602;min-height:100vh;display:flex;align-items:center;justify-content:center;}
+    .wrap{position:relative;width:420px;padding:3.5rem;border:1px solid rgba(201,168,76,.2);background:linear-gradient(135deg,#0f0a03,#120d04);}
+    .corner{position:absolute;width:18px;height:18px;border-color:#c9a84c;border-style:solid;}
+    .tl{top:-1px;left:-1px;border-width:1px 0 0 1px;}
+    .br{bottom:-1px;right:-1px;border-width:0 1px 1px 0;}
+    .logo{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:200;letter-spacing:.2em;color:#e8d08a;text-align:center;margin-bottom:.3rem;}
+    .sub{font-size:.6rem;letter-spacing:.35em;text-transform:uppercase;color:rgba(201,168,76,.4);text-align:center;margin-bottom:2.5rem;}
+    .divider{height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.2),transparent);margin-bottom:2.5rem;}
+    .msg{font-size:.78rem;color:rgba(212,201,176,.5);text-align:center;line-height:1.8;margin-bottom:2rem;}
+    .google-btn{display:flex;align-items:center;justify-content:center;gap:.8rem;width:100%;padding:1rem;background:#fff;color:#333;font-size:.78rem;font-weight:500;font-family:'DM Sans',sans-serif;border:none;cursor:pointer;transition:all .2s;text-decoration:none;}
+    .google-btn:hover{background:#f1f1f1;transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.3);}
+    .google-btn img{width:20px;}
+    .flash{background:rgba(200,60,60,.1);border:1px solid rgba(200,60,60,.2);color:#e08080;padding:.6rem 1rem;font-size:.72rem;text-align:center;margin-bottom:1.2rem;}
+    .skip{display:block;text-align:center;margin-top:1.5rem;font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.15);cursor:pointer;text-decoration:none;transition:color .2s;}
+    .skip:hover{color:rgba(201,168,76,.5);}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="corner tl"></div>
+    <div class="corner br"></div>
+    <div class="logo">Malikstore</div>
+    <div class="sub">Artificial Jewellery · Karachi</div>
+    <div class="divider"></div>
+    <p class="msg">Sign in to browse our collection<br>and place your order</p>
+    {% with messages = get_flashed_messages() %}
+      {% for msg in messages %}<div class="flash">{{ msg }}</div>{% endfor %}
+    {% endwith %}
+    <a href="{{ url_for('google.login') }}" class="google-btn">
+      <img src="https://developers.google.com/identity/images/g-logo.png" alt="G">
+      Continue with Google
+    </a>
+    <a href="{{ url_for('home') }}" class="skip">Browse without login</a>
+  </div>
+</body>
+</html>
