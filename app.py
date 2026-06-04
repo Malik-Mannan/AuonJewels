@@ -38,20 +38,37 @@ google_bp = make_google_blueprint(
 )
 app.register_blueprint(google_bp, url_prefix="/login")
 
-def get_db():
-    return mysql.connector.connect(
-        host=os.environ.get('MYSQL_HOST', 'localhost'),
-        user=os.environ.get('MYSQL_USER', 'root'),
-        password=os.environ.get('MYSQL_PASSWORD', ''),
-        database=os.environ.get('MYSQL_DATABASE', 'malikstore')
-    )
-def get_db():
-    return mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="malikmalik123.",
-        database="malikstore"
-    )
+import os
+from urllib.parse import urlparse
+
+def get_db_connection():
+    try:
+        mysql_url = os.getenv('MYSQL_URL')
+        
+        if mysql_url:
+            url = urlparse(mysql://root:nvubQoCrNXwICifprnragcsENtivcbJR@mysql.railway.internal:3306/malikstore)
+            conn = mysql.connector.connect(
+                host=url.mysql.railway.internal,
+                port=url.port,
+                user=url.username,
+                password=url.password,
+                database=url.path.strip('/'),
+                connection_timeout=30
+            )
+        else:
+            # Fallback to individual variables
+            conn = mysql.connector.connect(
+                host=os.getenv('mysql.railway.internal'),
+                port=int(os.getenv('3306', 3306)),
+                user=os.getenv('root'),
+                password=os.getenv('nvubQoCrNXwICifprnragcsENtivcbJR'),
+                database=os.getenv('malikstore', 'malikstore'),
+                connection_timeout=30
+            )
+        return conn
+    except Exception as e:
+        print("Database Connection Error:", e)
+        raise
 
 # ══════════════════════════════════════════════
 #  DECORATORS
