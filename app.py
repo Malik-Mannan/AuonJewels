@@ -44,27 +44,26 @@ from urllib.parse import urlparse
 # ✅ Clean & Reliable Database Connection
 def get_db():
     try:
-        # Primary method: Use MYSQL_URL (Recommended by Railway)
-        mysql_url = os.getenv('mysql://root:nvubQoCrNXwICifprnragcsENtivcbJR@mysql.railway.internal:3306/malikstore')
+        mysql_url = os.getenv('MYSQL_URL')  # ✅ variable NAME, not the value
         
         if mysql_url:
             url = urlparse(mysql_url)
             conn = mysql.connector.connect(
                 host=url.hostname,
-                port=url.port,
+                port=url.port or 3306,
                 user=url.username,
                 password=url.password,
                 database=url.path.strip('/'),
                 connection_timeout=30
             )
         else:
-            # Fallback using Railway variables
+            # Fallback using individual Railway variables
             conn = mysql.connector.connect(
-                host=os.getenv('mysql.railway.internal'),
-                port=int(os.getenv('3306', 3306)),
-                user=os.getenv('root'),
-                password=os.getenv('nvubQoCrNXwICifprnragcsENtivcbJR'),
-                database=os.getenv('malikstore', 'malikstore'),
+                host=os.getenv('MYSQLHOST'),        # ✅ variable NAME
+                port=int(os.getenv('MYSQLPORT', '3306')),
+                user=os.getenv('MYSQLUSER'),        # ✅ variable NAME
+                password=os.getenv('MYSQLPASSWORD'),# ✅ variable NAME
+                database=os.getenv('MYSQLDATABASE', 'malikstore'),
                 connection_timeout=30
             )
         return conn
