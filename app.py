@@ -43,10 +43,10 @@ from urllib.parse import urlparse
 
 def get_db_connection():
     try:
-        mysql_url = os.getenv('MYSQL_URL')
+        mysql_url = os.getenv('mysql://root:nvubQoCrNXwICifprnragcsENtivcbJR@mysql.railway.internal:3306/malikstore')
         
         if mysql_url:
-            url = urlparse(mysql://root:nvubQoCrNXwICifprnragcsENtivcbJR@mysql.railway.internal:3306/malikstore)
+            url = urlparse(mysql_url)
             conn = mysql.connector.connect(
                 host=url.hostname,
                 port=url.port,
