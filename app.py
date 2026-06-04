@@ -48,7 +48,7 @@ def get_db_connection():
         if mysql_url:
             url = urlparse(mysql://root:nvubQoCrNXwICifprnragcsENtivcbJR@mysql.railway.internal:3306/malikstore)
             conn = mysql.connector.connect(
-                host=url.mysql.railway.internal,
+                host=url.hostname,
                 port=url.port,
                 user=url.username,
                 password=url.password,
