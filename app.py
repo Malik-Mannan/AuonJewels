@@ -682,7 +682,10 @@ def story_images():
     return render_template("admin/story_images.html")
 
 # ══════════════════════════════════════════════
+import os
+
 if __name__ == '__main__':
-    import os
-port = int(os.environ.get('PORT', 5000))
-app.run(host='0.0.0.0', port=port, debug=False)
+    # Railway will provide the port dynamically. If it's not there, fallback to 5000.
+    port = int(os.environ.get("PORT", 5000))
+    # host MUST be set to '0.0.0.0' to accept external cloud traffic
+    app.run(host='0.0.0.0', port=port)
