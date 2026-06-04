@@ -277,7 +277,7 @@ def send_low_stock_alert(db, product_id, product_name, stock):
           </div>
           <p style="font-size:13px;color:#8a7e6a;line-height:1.8;">Please restock this item soon to avoid missing orders.</p>
           <div style="text-align:center;margin-top:24px;">
-            <a href="http://localhost:5000/admin/products/edit/{product_id}"
+            <a href="https://auonjewels-production.up.railway.app/admin/products/edit/{product_id}"
                style="display:inline-block;padding:.7rem 2rem;background:#c9a84c;color:#0a0602;font-size:.68rem;font-weight:500;letter-spacing:.15em;text-transform:uppercase;text-decoration:none;">
               Update Stock Now
             </a>
