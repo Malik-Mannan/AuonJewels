@@ -37,22 +37,41 @@ google_bp = make_google_blueprint(
     redirect_to="google_callback"
 )
 app.register_blueprint(google_bp, url_prefix="/login")
+import mysql.connector
+import os
+from urllib.parse import urlparse
 
+# ✅ Clean & Reliable Database Connection
 def get_db():
-    return mysql.connector.connect(
-        host=os.environ.get('MYSQL_HOST', 'localhost'),
-        user=os.environ.get('MYSQL_USER', 'root'),
-        password=os.environ.get('MYSQL_PASSWORD', ''),
-        database=os.environ.get('MYSQL_DATABASE', 'malikstore')
-    )
-def get_db():
-    return mysql.connector.connect(
-        host="mysql.railway.internal",
-        user="root",
-        password="nvubQoCrNXwICifprnragcsENtivcbJR.",
-        database="malikstore"
-    )
-
+    try:
+        # Primary method: Use MYSQL_URL (Recommended by Railway)
+        mysql_url = os.getenv('mysql://root:nvubQoCrNXwICifprnragcsENtivcbJR@mysql.railway.internal:3306/malikstore')
+        
+        if mysql_url:
+            url = urlparse(mysql_url)
+            conn = mysql.connector.connect(
+                host=url.hostname,
+                port=url.port,
+                user=url.username,
+                password=url.password,
+                database=url.path.strip('/'),
+                connection_timeout=30
+            )
+        else:
+            # Fallback using Railway variables
+            conn = mysql.connector.connect(
+                host=os.getenv('mysql.railway.internal'),
+                port=int(os.getenv('3306', 3306)),
+                user=os.getenv('root'),
+                password=os.getenv('nvubQoCrNXwICifprnragcsENtivcbJR'),
+                database=os.getenv('malikstore', 'malikstore'),
+                connection_timeout=30
+            )
+        return conn
+    except Exception as e:
+        print(f"❌ Database Connection Error: {e}")
+        traceback.print_exc()
+        raise
 # ══════════════════════════════════════════════
 #  DECORATORS
 # ══════════════════════════════════════════════
