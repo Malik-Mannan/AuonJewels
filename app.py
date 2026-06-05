@@ -235,8 +235,8 @@ def test_email():
         mail.send(msg)
         return "Email sent successfully!"
     except Exception as e:
-        return f"Email failed: {str(e)}"
-
+        import traceback
+        return f"<pre>Email failed:\n{traceback.format_exc()}</pre>"
 # ══════════════════════════════════════════════
 #  STOCK ALERT SYSTEM
 # ══════════════════════════════════════════════
