@@ -700,7 +700,7 @@ def story_images():
         return redirect(url_for('story_images'))
     return render_template("admin/story_images.html")
 
-@app.route("/admin/story-images/delete/<section>")    
+@app.route("/admin/story-images/delete/<section>")
 @login_required
 def delete_story_image(section):
     import glob

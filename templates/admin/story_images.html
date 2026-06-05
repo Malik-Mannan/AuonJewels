@@ -92,14 +92,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--ink);color:#d4c9b0;displa
         <div class="card-title">Earrings</div>
         <div class="card-sub">Section 01</div>
         <img src="/static/images/earrings-story.jpg" class="current-img"
-     onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-<div class="no-img">💍</div>
-<a href="/admin/story-images/delete/earrings" 
-   onclick="return confirm('Delete earrings image?')"
-   style="display:block;text-align:center;padding:.5rem;margin-bottom:.8rem;font-size:.65rem;letter-spacing:.1em;color:#e08888;border:1px solid rgba(224,136,136,.3);text-decoration:none;">
-  🗑 Delete Image
-</a>
-        <div class="no-img">💍</div>
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+        <div class="no-img"></div>
+        <a href="/admin/story-images/delete/earrings" onclick="return confirm('Delete earrings image?')" class="btn-delete">🗑 Delete Image</a>
         <img id="prev-earrings" class="preview-img" alt=""/>
         <div class="upload-box" onclick="document.getElementById('inp-earrings').click()">
           <div class="upload-icon">📁</div>
@@ -115,14 +110,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--ink);color:#d4c9b0;displa
         <div class="card-title">Necklaces</div>
         <div class="card-sub">Section 02</div>
         <img src="/static/images/necklaces-story.jpg" class="current-img"
-     onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-<div class="no-img">💍</div>
-<a href="/admin/story-images/delete/necklaces" 
-   onclick="return confirm('Delete necklaces image?')")"
-   style="display:block;text-align:center;padding:.5rem;margin-bottom:.8rem;font-size:.65rem;letter-spacing:.1em;color:#e08888;border:1px solid rgba(224,136,136,.3);text-decoration:none;">
-  🗑 Delete Image
-</a>
-        <div class="no-img">📿</div>
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+        <div class="no-img"></div>
+        <a href="/admin/story-images/delete/necklaces"
+           onclick="return confirm('Delete necklaces image?')"
+           class="btn-delete">🗑 Delete Image</a>
         <img id="prev-necklaces" class="preview-img" alt=""/>
         <div class="upload-box" onclick="document.getElementById('inp-necklaces').click()">
           <div class="upload-icon">📁</div>
@@ -138,14 +130,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--ink);color:#d4c9b0;displa
         <div class="card-title">Bracelets</div>
         <div class="card-sub">Section 03</div>
         <img src="/static/images/bracelets-story.jpg" class="current-img"
-     onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-<a href="/admin/story-images/delete/bracelets" 
-   onclick="return confirm('Delete bracelets image?')"" 
-   onclick="return confirm('Delete earrings image?')"
-   style="display:block;text-align:center;padding:.5rem;margin-bottom:.8rem;font-size:.65rem;letter-spacing:.1em;color:#e08888;border:1px solid rgba(224,136,136,.3);text-decoration:none;">
-  🗑 Delete Image
-</a>
-        <div class="no-img">✨</div>
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+             
+        <div class="no-img"></div>
+        <a href="/admin/story-images/delete/bracelets" onclick="return confirm('Delete bracelets image?')" class="btn-delete">🗑 Delete Image</a>
         <img id="prev-bracelets" class="preview-img" alt=""/>
         <div class="upload-box" onclick="document.getElementById('inp-bracelets').click()">
           <div class="upload-icon">📁</div>
