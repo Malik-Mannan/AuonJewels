@@ -699,6 +699,14 @@ def story_images():
         flash("Story images updated!")
         return redirect(url_for('story_images'))
     return render_template("admin/story_images.html")
+    @app.route("/admin/story-images/delete/<section>")
+@login_required
+def delete_story_image(section):
+    import glob
+    for f in glob.glob(os.path.join(UPLOAD_FOLDER, f"{section}-story.*")):
+        os.remove(f)
+    flash(f"{section.capitalize()} image deleted!")
+    return redirect(url_for('story_images'))
 
 # ══════════════════════════════════════════════
 if __name__ == '__main__':
