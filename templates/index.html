@@ -4,8 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <title>Auon Jewels — Artificial Jewellery Karachi</title>
-  <link rel="icon" type="image/png" href="/static/images/logo.png">
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,200;0,300;0,400;1,200;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+<link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/static/images/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/static/images/favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/static/images/apple-touch-icon.png">  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,200;0,300;0,400;1,200;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <style>
@@ -668,8 +670,7 @@
       <div class="om-field"><label class="om-label">Email *</label>
         <input id="om-email" class="om-input" type="email" placeholder="sara@email.com" value="{{ session.customer_email if session.customer_email else '' }}"/></div>
       <div class="om-field"><label class="om-label">Delivery Address</label>
-        <textarea id="om-address" class="om-input om-textarea" placeholder="Street, Area, Karachi"></textarea></div>
-      <div id="om-error"></div>
+<textarea id="om-address" class="om-input om-textarea" placeholder="Street, Area, Karachi" required></textarea>      <div id="om-error"></div>
       <div id="om-loading">⏳ Placing your order...</div>
       <div class="om-actions">
         <button class="om-btn-place" onclick="submitOrder()">✓ Place Order</button>
@@ -868,6 +869,7 @@
       if (!name)  { errEl.textContent = 'Please enter your name.';  return; }
       if (!phone) { errEl.textContent = 'Please enter your phone.'; return; }
       if (!email) { errEl.textContent = 'Please enter your email.'; return; }
+      if (!address) { errEl.textContent = 'Please enter your delivery address.'; return; }
       const cart  = loadCart();
       const total = cart.reduce((a,i)=>a+i.price*i.qty,0);
       loadEl.style.display = 'block';
