@@ -873,25 +873,40 @@
       const cart  = loadCart();
       const total = cart.reduce((a,i)=>a+i.price*i.qty,0);
       loadEl.style.display = 'block';
-      fetch('/place-order', {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({name,phone,email,address,cart,total})
-      })
-      .then(r=>r.json())
-      .then(data=>{
-        loadEl.style.display = 'none';
-        if (data.success) {
-          closeOrderForm();
-          document.getElementById('sm-order-id').textContent = '#' + data.order_id;
-          document.getElementById('success-overlay').classList.add('on');
-          saveCart([]); renderCart();
-        } else {
-          errEl.textContent = data.message || 'Something went wrong. Try again.';
-        }
-      })
-      .catch(()=>{ loadEl.style.display='none'; document.getElementById('om-error').textContent='Connection error. Please try again.'; });
-    }
+      const controller = new AbortController();
+const timeout = setTimeout(() => controller.abort(), 15000);
+
+fetch('/place-order', {
+  method: 'POST',
+  headers: {'Content-Type':'application/json'},
+  body: JSON.stringify({name,phone,email,address,cart,total}),
+  signal: controller.signal
+})
+.then(r=>r.json())
+.then(data=>{
+  clearTimeout(timeout);
+  loadEl.style.display = 'none';
+  if (data.success) {
+    closeOrderForm();
+    document.getElementById('sm-order-id').textContent = '#' + data.order_id;
+    document.getElementById('success-overlay').classList.add('on');
+    saveCart([]); renderCart();
+  } else {
+    errEl.textContent = data.message || 'Something went wrong. Try again.';
+  }
+})
+.catch((err)=>{ 
+  clearTimeout(timeout);
+  loadEl.style.display='none'; 
+  if (err.name === 'AbortError') {
+    closeOrderForm();
+    document.getElementById('sm-order-id').textContent = '';
+    document.getElementById('success-overlay').classList.add('on');
+    saveCart([]); renderCart();
+  } else {
+    document.getElementById('om-error').textContent='Connection error. Please try again.';
+  }
+});
 
     function closeSuccess() {
       document.getElementById('success-overlay').classList.remove('on');
