@@ -183,9 +183,9 @@ select.status-sel{background:rgba(255,255,255,.04);border:1px solid rgba(201,168
                   <div class="item-thumb-ph">◇</div>
                 {% endif %}
                 <div style="flex:1;">
-                  <div class="item-name">{{ item.Name }}</div>
-                  <div class="item-cat">{{ item.category }}</div>
-                </div>
+  <div class="item-name">{{ item.Name }}</div>
+  <div class="item-cat">{{ item.category }} · <span style="color:var(--gold);font-size:.65rem;">ID: {{ item.product_id }}</span></div>
+</div>
                 <div class="item-qty">Qty: {{ item.quantity }}</div>
                 <div class="item-price">PKR {{ "%.0f"|format(item.price * item.quantity) }}</div>
               </div>

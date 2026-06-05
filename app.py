@@ -663,7 +663,7 @@ def admin_orders():
     # Fetch items for each order
     for order in orders:
         cursor.execute("""
-            SELECT oi.quantity, oi.price, p.Name, p.image, p.category
+            SELECT oi.quantity, oi.price, oi.product_id, p.Name, p.image, p.category
             FROM order_items oi
             JOIN Products p ON oi.product_id = p.ID
             WHERE oi.order_id = %s
