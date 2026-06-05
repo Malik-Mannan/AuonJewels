@@ -11,10 +11,11 @@ import traceback
 load_dotenv()
 
 app = Flask(__name__)
+from werkzeug.middleware.proxy_fix import ProxyFix
+app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 app.jinja_env.globals['enumerate'] = enumerate
 app.secret_key = os.environ.get('SECRET_KEY')
 
-os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
 UPLOAD_FOLDER = 'static/images'
 ADMIN_USERNAME = os.environ.get('ADMIN_USERNAME')
