@@ -6,6 +6,7 @@ from werkzeug.utils import secure_filename
 from flask_dance.contrib.google import make_google_blueprint, google
 from flask_mail import Mail, Message
 from dotenv import load_dotenv
+from urllib.parse import urlparse
 import traceback
 
 load_dotenv()
@@ -16,11 +17,13 @@ app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 app.jinja_env.globals['enumerate'] = enumerate
 app.secret_key = os.environ.get('SECRET_KEY')
 
-
 UPLOAD_FOLDER = 'static/images'
 ADMIN_USERNAME = os.environ.get('ADMIN_USERNAME')
 ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD')
 
+# ══════════════════════════════════════════════
+#  EMAIL CONFIG
+# ══════════════════════════════════════════════
 app.config['MAIL_SERVER']         = 'smtp.gmail.com'
 app.config['MAIL_PORT']           = 587
 app.config['MAIL_USE_TLS']        = True
@@ -29,6 +32,9 @@ app.config['MAIL_PASSWORD']       = os.environ.get('MAIL_PASSWORD')
 app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_USERNAME')
 mail = Mail(app)
 
+# ══════════════════════════════════════════════
+#  GOOGLE OAUTH
+# ══════════════════════════════════════════════
 google_bp = make_google_blueprint(
     client_id=os.environ.get('GOOGLE_CLIENT_ID'),
     client_secret=os.environ.get('GOOGLE_CLIENT_SECRET'),
@@ -38,15 +44,13 @@ google_bp = make_google_blueprint(
     redirect_to="google_callback"
 )
 app.register_blueprint(google_bp, url_prefix="/login")
-import mysql.connector
-import os
-from urllib.parse import urlparse
 
-# ✅ Clean & Reliable Database Connection
+# ══════════════════════════════════════════════
+#  DATABASE
+# ══════════════════════════════════════════════
 def get_db():
     try:
-        mysql_url = os.getenv('MYSQL_URL')  # ✅ variable NAME, not the value
-        
+        mysql_url = os.getenv('MYSQL_URL')
         if mysql_url:
             url = urlparse(mysql_url)
             conn = mysql.connector.connect(
@@ -58,12 +62,11 @@ def get_db():
                 connection_timeout=30
             )
         else:
-            # Fallback using individual Railway variables
             conn = mysql.connector.connect(
-                host=os.getenv('MYSQLHOST'),        # ✅ variable NAME
+                host=os.getenv('MYSQLHOST'),
                 port=int(os.getenv('MYSQLPORT', '3306')),
-                user=os.getenv('MYSQLUSER'),        # ✅ variable NAME
-                password=os.getenv('MYSQLPASSWORD'),# ✅ variable NAME
+                user=os.getenv('MYSQLUSER'),
+                password=os.getenv('MYSQLPASSWORD'),
                 database=os.getenv('MYSQLDATABASE', 'malikstore'),
                 connection_timeout=30
             )
@@ -72,6 +75,7 @@ def get_db():
         print(f"❌ Database Connection Error: {e}")
         traceback.print_exc()
         raise
+
 # ══════════════════════════════════════════════
 #  DECORATORS
 # ══════════════════════════════════════════════
@@ -189,7 +193,6 @@ def product_detail(id):
     cursor.execute("SELECT * FROM Products WHERE category = %s AND ID != %s LIMIT 4",
                    (product['category'], id))
     related = cursor.fetchall()
-    # ── Fetch gallery images ──
     cursor.execute("SELECT * FROM product_images WHERE product_id = %s ORDER BY sort_order", (id,))
     gallery = cursor.fetchall()
     db.close()
@@ -225,8 +228,8 @@ def my_orders():
 def test_email():
     try:
         msg = Message(
-            subject="Test — Malikstore",
-            recipients=["ma.abmananaus@gmail.com"],
+            subject="Test — Auon Store",
+            recipients=[os.environ.get('MAIL_USERNAME')],
             body="Email is working!"
         )
         mail.send(msg)
@@ -246,20 +249,20 @@ def send_low_stock_alert(db, product_id, product_name, stock):
             return
 
         if stock == 0:
-            subject      = f"🚨 Out of Stock — {product_name}"
-            badge_color  = "#e08888"
-            badge_text   = "OUT OF STOCK"
+            subject       = f"🚨 Out of Stock — {product_name}"
+            badge_color   = "#e08888"
+            badge_text    = "OUT OF STOCK"
             stock_display = "0 — Sold Out!"
         else:
-            subject      = f"⚠ Low Stock Alert — {product_name} ({stock} left)"
-            badge_color  = "#e8a84c"
-            badge_text   = "LOW STOCK WARNING"
+            subject       = f"⚠ Low Stock Alert — {product_name} ({stock} left)"
+            badge_color   = "#e8a84c"
+            badge_text    = "LOW STOCK WARNING"
             stock_display = f"{stock} remaining"
 
         html_body = f"""
         <div style="background:#0a0602;padding:40px 32px;font-family:Georgia,serif;max-width:500px;margin:0 auto;">
           <div style="text-align:center;padding-bottom:20px;margin-bottom:28px;border-bottom:1px solid #c9a84c;">
-            <h1 style="font-size:22px;font-weight:300;letter-spacing:6px;color:#c9a84c;text-transform:uppercase;margin:0;">Auon Store</h1>
+            <h1 style="font-size:22px;font-weight:300;letter-spacing:6px;color:#c9a84c;text-transform:uppercase;margin:0;">Auon Jewels</h1>
             <p style="font-size:10px;letter-spacing:3px;color:#8a7e6a;text-transform:uppercase;margin:6px 0 0;">Admin Alert</p>
           </div>
           <p style="font-size:11px;letter-spacing:3px;color:{badge_color};text-transform:uppercase;margin-bottom:8px;">⚠ {badge_text}</p>
@@ -283,7 +286,7 @@ def send_low_stock_alert(db, product_id, product_name, stock):
               Update Stock Now
             </a>
           </div>
-          <p style="font-size:11px;color:#4a3e2a;text-align:center;margin-top:20px;letter-spacing:1px;">© 2026 Auon Store · Karachi</p>
+          <p style="font-size:11px;color:#4a3e2a;text-align:center;margin-top:20px;letter-spacing:1px;">© 2026 Auon Jewels · Karachi</p>
         </div>
         """
 
@@ -336,17 +339,19 @@ def place_order():
         cursor  = db.cursor(dictionary=True)
         cursor2 = db.cursor()
 
-        cursor.execute(
-            "SELECT ID FROM Customers WHERE Phone=%s OR Email=%s LIMIT 1",
-            (phone, email)
-        )
+        # ── Check by email first, then phone separately ──
+        cursor.execute("SELECT ID FROM Customers WHERE Email=%s LIMIT 1", (email,))
         existing_customer = cursor.fetchone()
+
+        if not existing_customer:
+            cursor.execute("SELECT ID FROM Customers WHERE Phone=%s LIMIT 1", (phone,))
+            existing_customer = cursor.fetchone()
 
         if existing_customer:
             customer_id = existing_customer['ID']
             cursor2.execute(
-                "UPDATE Customers SET Email=%s, Address=%s, Full_Name=%s, Phone=%s WHERE ID=%s",
-                (email, address, name, phone, customer_id)
+                "UPDATE Customers SET Full_Name=%s, Phone=%s, Address=%s WHERE ID=%s",
+                (name, phone, address, customer_id)
             )
             db.commit()
         else:
@@ -439,7 +444,7 @@ def send_order_email(to_email, name, order_id, items, total, address):
     html_body = f"""
     <div style="background:#0a0602;padding:48px 32px;font-family:Georgia,serif;max-width:600px;margin:0 auto;">
       <div style="text-align:center;padding-bottom:28px;margin-bottom:36px;border-bottom:1px solid #c9a84c;">
-        <h1 style="font-size:26px;font-weight:300;letter-spacing:8px;color:#c9a84c;text-transform:uppercase;margin:0;">Auon Store</h1>
+        <h1 style="font-size:26px;font-weight:300;letter-spacing:8px;color:#c9a84c;text-transform:uppercase;margin:0;">Auon Jewels</h1>
         <p style="font-size:10px;letter-spacing:4px;color:#8a7e6a;text-transform:uppercase;margin:8px 0 0;">Artificial Jewellery · Karachi</p>
       </div>
       <p style="font-size:11px;letter-spacing:3px;color:#8a7e6a;text-transform:uppercase;margin-bottom:6px;">Order Confirmed ✓</p>
@@ -473,13 +478,13 @@ def send_order_email(to_email, name, order_id, items, total, address):
       </div>
       <div style="text-align:center;border-top:1px solid #1e1508;padding-top:24px;">
         <p style="font-size:12px;color:#8a7e6a;margin:0;">Questions? Contact us on WhatsApp</p>
-        <p style="font-size:11px;color:#4a3e2a;margin:8px 0 0;letter-spacing:1px;">© 2026 Auon Store · Karachi</p>
+        <p style="font-size:11px;color:#4a3e2a;margin:8px 0 0;letter-spacing:1px;">© 2026 Auon Jewels · Karachi</p>
       </div>
     </div>
     """
 
     msg = Message(
-        subject=f"Order Confirmed #{order_id} — Auon Store",
+        subject=f"Order Confirmed #{order_id} — Auon Jewels",
         recipients=[to_email],
         html=html_body
     )
@@ -570,7 +575,6 @@ def edit_product(id):
         flash("Product not found.")
         return redirect(url_for('admin_products'))
 
-    # ── Fetch existing gallery images ──
     cursor.execute("SELECT * FROM product_images WHERE product_id = %s ORDER BY sort_order", (id,))
     gallery = cursor.fetchall()
 
@@ -601,11 +605,9 @@ def edit_product(id):
             id
         ))
 
-        # ── Auto-reset stock alert if restocked above 5 ──
         if new_stock > 5:
             cursor2.execute("DELETE FROM stock_alerts_sent WHERE product_id = %s", (id,))
 
-        # ── Save gallery images (up to 3) ──
         for i in range(1, 4):
             key = f'gallery_{i}'
             if key in request.files:
@@ -701,10 +703,6 @@ def story_images():
     return render_template("admin/story_images.html")
 
 # ══════════════════════════════════════════════
-import os
-
 if __name__ == '__main__':
-    # Railway will provide the port dynamically. If it's not there, fallback to 5000.
     port = int(os.environ.get("PORT", 5000))
-    # host MUST be set to '0.0.0.0' to accept external cloud traffic
     app.run(host='0.0.0.0', port=port)
