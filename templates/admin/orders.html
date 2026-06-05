@@ -59,6 +59,66 @@ select.status-sel{background:rgba(255,255,255,.04);border:1px solid rgba(201,168
   </div>
 </aside>
 
+<style>
+  /* ── ITEMS ROW (hidden by default) ── */
+  .items-row { display: none; background: rgba(201,168,76,.03); }
+  .items-row.open { display: table-row; }
+  .items-row td { padding: 0 !important; border-top: none !important; }
+
+  .items-inner {
+    padding: 1rem 1.5rem 1.2rem 3rem;
+    border-top: 1px solid rgba(201,168,76,.08);
+  }
+  .items-inner-title {
+    font-size: .6rem;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: .75rem;
+  }
+  .item-line {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: .5rem 0;
+    border-bottom: 1px solid rgba(255,255,255,.04);
+  }
+  .item-line:last-child { border-bottom: none; }
+  .item-thumb {
+    width: 40px; height: 40px;
+    object-fit: cover;
+    background: rgba(201,168,76,.08);
+    border: 1px solid rgba(201,168,76,.1);
+    flex-shrink: 0;
+  }
+  .item-thumb-ph {
+    width: 40px; height: 40px;
+    background: rgba(201,168,76,.06);
+    border: 1px solid rgba(201,168,76,.1);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; opacity: .4; flex-shrink: 0;
+  }
+  .item-name  { font-size: .8rem; color: #e8ddc8; flex: 1; }
+  .item-cat   { font-size: .62rem; color: var(--muted); }
+  .item-qty   { font-size: .72rem; color: var(--muted); white-space: nowrap; }
+  .item-price { font-size: .8rem;  color: var(--gold);  white-space: nowrap; }
+
+  /* Toggle button */
+  .btn-toggle {
+    background: none;
+    border: 1px solid rgba(201,168,76,.2);
+    color: var(--gold);
+    font-size: .62rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    padding: .3rem .7rem;
+    cursor: pointer;
+    transition: all .2s;
+    white-space: nowrap;
+  }
+  .btn-toggle:hover { background: rgba(201,168,76,.08); }
+</style>
+
 <main class="main">
   <div class="page-title">Orders</div>
   <div class="page-sub">{{ orders|length }} total orders</div>
@@ -73,11 +133,14 @@ select.status-sel{background:rgba(255,255,255,.04);border:1px solid rgba(201,168
           <th>Total</th>
           <th>Status</th>
           <th>Date</th>
+          <th>Items</th>
           <th>Update</th>
         </tr>
       </thead>
       <tbody>
         {% for o in orders %}
+
+        <!-- ── Main order row ── -->
         <tr>
           <td style="color:var(--muted)">#{{ o.ID }}</td>
           <td>{{ o.Full_Name }}</td>
@@ -85,6 +148,12 @@ select.status-sel{background:rgba(255,255,255,.04);border:1px solid rgba(201,168
           <td>PKR {{ "%.0f"|format(o.Total) }}</td>
           <td><span class="badge badge-{{ o.Status }}">{{ o.Status }}</span></td>
           <td>{{ o.Ordered_at.strftime('%d %b %Y') }}</td>
+          <td>
+            <!-- Toggle button to show/hide items -->
+            <button class="btn-toggle" onclick="toggleItems({{ o.ID }}, this)">
+              {{ o.products|length }} item{{ 's' if o.products|length != 1 else '' }} ▾
+            </button>
+          </td>
           <td>
             <form method="POST" action="/admin/orders/status/{{ o.ID }}" style="display:flex;gap:.5rem;">
               <select name="status" class="status-sel">
@@ -98,12 +167,48 @@ select.status-sel{background:rgba(255,255,255,.04);border:1px solid rgba(201,168
             </form>
           </td>
         </tr>
+
+        <!-- ── Expandable items row ── -->
+        <tr class="items-row" id="items-{{ o.ID }}">
+          <td colspan="8">
+            <div class="items-inner">
+              <div class="items-inner-title">Order Items — #{{ o.ID }}</div>
+              {% for item in o.products %}
+              <div class="item-line">
+                {% if item.image %}
+                  <img src="/static/images/{{ item.image }}" alt="{{ item.Name }}" class="item-thumb"
+                       onerror="this.style.display='none';this.nextSibling.style.display='flex';">
+                  <div class="item-thumb-ph" style="display:none;">◇</div>
+                {% else %}
+                  <div class="item-thumb-ph">◇</div>
+                {% endif %}
+                <div style="flex:1;">
+                  <div class="item-name">{{ item.Name }}</div>
+                  <div class="item-cat">{{ item.category }}</div>
+                </div>
+                <div class="item-qty">Qty: {{ item.quantity }}</div>
+                <div class="item-price">PKR {{ "%.0f"|format(item.price * item.quantity) }}</div>
+              </div>
+              {% endfor %}
+            </div>
+          </td>
+        </tr>
+
         {% else %}
-        <tr><td colspan="7" style="text-align:center;color:var(--muted);padding:2rem;">No orders yet</td></tr>
+        <tr><td colspan="8" style="text-align:center;color:var(--muted);padding:2rem;">No orders yet</td></tr>
         {% endfor %}
       </tbody>
     </table>
   </div>
 </main>
+
+<script>
+  function toggleItems(orderId, btn) {
+    const row = document.getElementById('items-' + orderId);
+    const isOpen = row.classList.toggle('open');
+    btn.textContent = btn.textContent.replace(isOpen ? '▾' : '▴', isOpen ? '▴' : '▾');
+  }
+</script>
+
 </body>
 </html>

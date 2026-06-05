@@ -648,7 +648,6 @@ def delete_product(id):
     db.close()
     flash("Product deleted!")
     return redirect(url_for('admin_products'))
-
 @app.route("/admin/orders")
 @login_required
 def admin_orders():
@@ -660,9 +659,19 @@ def admin_orders():
         ORDER BY o.Ordered_at DESC
     """)
     orders = cursor.fetchall()
+
+    # Fetch items for each order
+    for order in orders:
+        cursor.execute("""
+            SELECT oi.quantity, oi.price, p.Name, p.image, p.category
+            FROM order_items oi
+            JOIN Products p ON oi.product_id = p.ID
+            WHERE oi.order_id = %s
+        """, (order['ID'],))
+        order['products'] = cursor.fetchall()
+
     db.close()
     return render_template("admin/orders.html", orders=orders)
-
 @app.route("/admin/orders/status/<int:id>", methods=["POST"])
 @login_required
 def update_order_status(id):
