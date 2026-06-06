@@ -416,20 +416,9 @@
       if(dots[currentSlide]) dots[currentSlide].classList.add('active');
     }
 
-    function changeSlide(delta) {
-      goToSlide(currentSlide + delta);
-      resetAuto();
-    }
-
-    function startAuto() {
-      autoTimer = setInterval(() => goToSlide(currentSlide + 1), 3500);
-    }
-
-    function resetAuto() {
-      clearInterval(autoTimer);
-      startAuto();
-    }
-
+    function changeSlide(delta) { goToSlide(currentSlide + delta); resetAuto(); }
+    function startAuto() { autoTimer = setInterval(() => goToSlide(currentSlide + 1), 3500); }
+    function resetAuto() { clearInterval(autoTimer); startAuto(); }
     if (slides.length > 1) startAuto();
 
     // ── QTY ──
@@ -440,17 +429,32 @@
       document.getElementById('qtyNum').textContent = selectedQty;
     }
 
-    // ── CART ──
-    function loadCart() { return JSON.parse(sessionStorage.getItem(CART_KEY) || '[]'); }
-    function saveCart(cart) { sessionStorage.setItem(CART_KEY, JSON.stringify(cart)); }
+    // ── CART — uses localStorage to sync with index.html ──
+    function loadCart() {
+      // Try localStorage first (shared with index.html), fallback to sessionStorage
+      const local = localStorage.getItem(CART_KEY);
+      return local ? JSON.parse(local) : [];
+    }
 
+    function saveCart(cart) {
+      // Save to localStorage so index.html can read it
+      localStorage.setItem(CART_KEY, JSON.stringify(cart));
+      // Update cart count for nav button
+      const total = cart.reduce((a,i) => a + i.qty, 0);
+      localStorage.setItem('cartCount', total);
+    }
+
+    // ── SINGLE addToCart function ──
     function addToCart() {
       if (!IS_LOGGED_IN) { document.getElementById('login-overlay').classList.add('on'); return; }
       let cart = loadCart();
       const existing = cart.find(i => i.name === PRODUCT_NAME);
       if (existing) { existing.qty = Math.min(maxStock, existing.qty + selectedQty); }
       else { cart.push({ name: PRODUCT_NAME, price: PRODUCT_PRICE, qty: selectedQty }); }
-      saveCart(cart); renderCart(); showToast('Added to cart ✓'); openCart();
+      saveCart(cart);
+      renderCart();
+      showToast('Added to cart ✓');
+      openCart();
     }
 
     function buyNow() {
@@ -459,7 +463,9 @@
       const existing = cart.find(i => i.name === PRODUCT_NAME);
       if (existing) { existing.qty = Math.min(maxStock, existing.qty + selectedQty); }
       else { cart.push({ name: PRODUCT_NAME, price: PRODUCT_PRICE, qty: selectedQty }); }
-      saveCart(cart); renderCart(); openOrderForm();
+      saveCart(cart);
+      renderCart();
+      openOrderForm();
     }
 
     function changeCartQty(name, delta) {
@@ -472,18 +478,23 @@
     }
 
     function removeItem(name) { saveCart(loadCart().filter(i => i.name !== name)); renderCart(); updateCartBtn(); }
-    function clearCart() { saveCart([]); renderCart(); updateCartBtn(); }
+    function clearCart()      { saveCart([]); renderCart(); updateCartBtn(); }
 
     function updateCartBtn() {
-      document.getElementById('cartBtn').textContent = `Cart (${loadCart().reduce((a,i)=>a+i.qty,0)})`;
+      const total = loadCart().reduce((a,i) => a + i.qty, 0);
+      document.getElementById('cartBtn').textContent = `Cart (${total})`;
     }
 
     function renderCart() {
-      const cart = loadCart();
-      const el = document.getElementById('cItems');
+      const cart   = loadCart();
+      const el     = document.getElementById('cItems');
       const footer = document.getElementById('cFooter');
       updateCartBtn();
-      if (cart.length === 0) { el.innerHTML='<div class="c-empty">Your cart is empty</div>'; footer.style.display='none'; return; }
+      if (cart.length === 0) {
+        el.innerHTML = '<div class="c-empty">Your cart is empty</div>';
+        footer.style.display = 'none';
+        return;
+      }
       footer.style.display = 'block';
       el.innerHTML = cart.map(i=>`
         <div class="c-item">
@@ -534,57 +545,67 @@
       const errEl   = document.getElementById('om-error');
       const loadEl  = document.getElementById('om-loading');
       errEl.textContent = '';
-      if (!name)  { errEl.textContent = 'Please enter your name.';  return; }
-      if (!phone) { errEl.textContent = 'Please enter your phone.'; return; }
-      if (!email) { errEl.textContent = 'Please enter your email.'; return; }
-      if (!address) { errEl.textContent = 'Please enter your delivery address.'; return; }
+      if (!name)    { errEl.textContent = 'Please enter your name.';    return; }
+      if (!phone)   { errEl.textContent = 'Please enter your phone.';   return; }
+      if (!email)   { errEl.textContent = 'Please enter your email.';   return; }
+      if (!address) { errEl.textContent = 'Please enter your address.'; return; }
       const cart  = loadCart();
       const total = cart.reduce((a,i)=>a+i.price*i.qty,0);
       loadEl.style.display = 'block';
-      const controller = new AbortController();
-const timeout = setTimeout(() => controller.abort(), 15000);
 
-fetch('/place-order', {
-  method: 'POST',
-  headers: {'Content-Type':'application/json'},
-  body: JSON.stringify({name,phone,email,address,cart,total}),
-  signal: controller.signal
-})
-.then(r=>r.json())
-.then(data=>{
-  clearTimeout(timeout);
-  loadEl.style.display = 'none';
-  if (data.success) {
-    closeOrderForm();
-    document.getElementById('sm-order-id').textContent = '#' + data.order_id;
-    document.getElementById('success-overlay').classList.add('on');
-    saveCart([]); renderCart();
-  } else {
-    errEl.textContent = data.message || 'Something went wrong. Try again.';
-  }
-})
-.catch((err)=>{ 
-  clearTimeout(timeout);
-  loadEl.style.display='none'; 
-  if (err.name === 'AbortError') {
-    closeOrderForm();
-    document.getElementById('sm-order-id').textContent = '';
-    document.getElementById('success-overlay').classList.add('on');
-    saveCart([]); renderCart();
-  } else {
-    errEl.textContent='Connection error. Please try again.';
-  }
-});
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 15000);
+
+      fetch('/place-order', {
+        method:  'POST',
+        headers: {'Content-Type':'application/json'},
+        body:    JSON.stringify({name,phone,email,address,cart,total}),
+        signal:  controller.signal
+      })
+      .then(r => r.json())
+      .then(data => {
+        clearTimeout(timeout);
+        loadEl.style.display = 'none';
+        if (data.success) {
+          closeOrderForm();
+          document.getElementById('sm-order-id').textContent = '#' + data.order_id;
+          document.getElementById('success-overlay').classList.add('on');
+          saveCart([]); renderCart();
+        } else {
+          errEl.textContent = data.message || 'Something went wrong. Try again.';
+        }
+      })
+      .catch((err) => {
+        clearTimeout(timeout);
+        loadEl.style.display = 'none';
+        if (err.name === 'AbortError') {
+          closeOrderForm();
+          document.getElementById('sm-order-id').textContent = '';
+          document.getElementById('success-overlay').classList.add('on');
+          saveCart([]); renderCart();
+        } else {
+          errEl.textContent = 'Connection error. Please try again.';
+        }
+      });
     }
 
-    function closeSuccess() { document.getElementById('success-overlay').classList.remove('on'); window.location.href='/'; }
+    function closeSuccess() {
+      document.getElementById('success-overlay').classList.remove('on');
+      window.location.href = '/';
+    }
 
     function showToast(msg) {
-      const t = document.getElementById('toast');
-      t.textContent = msg; t.classList.add('show');
-      setTimeout(()=>t.classList.remove('show'), 2500);
+      const t = document.createElement('div');
+      t.id = 'toast';
+      // Use existing toast element if available
+      const existing = document.getElementById('toast');
+      const el = existing || t;
+      el.textContent = msg;
+      el.classList.add('show');
+      setTimeout(() => el.classList.remove('show'), 2500);
     }
 
+    // ── INIT — load cart on page load ──
     renderCart();
   </script>
 </body>

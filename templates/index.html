@@ -708,10 +708,10 @@
     const MY_WHATSAPP = "923293931034";
     const IS_LOGGED_IN = {{ 'true' if session.customer_id else 'false' }};
 
-    // ── CART KEY (shared with product_detail.html) ──
+    // ── CART KEY — shared with product_detail.html ──
     const CART_KEY = 'malikCart';
-    function loadCart() { return JSON.parse(sessionStorage.getItem(CART_KEY) || '[]'); }
-    function saveCart(c) { sessionStorage.setItem(CART_KEY, JSON.stringify(c)); }
+    function loadCart() { return JSON.parse(localStorage.getItem(CART_KEY) || '[]'); }
+    function saveCart(c) { localStorage.setItem(CART_KEY, JSON.stringify(c)); }
 
     // ── CURSOR ──
     const dot=document.getElementById('cur-dot'),ring=document.getElementById('cur-ring');
@@ -801,8 +801,7 @@
     }
 
     function removeItem(name) {
-      let cart = loadCart().filter(i => i.name !== name);
-      saveCart(cart);
+      saveCart(loadCart().filter(i => i.name !== name));
       renderCart();
       updateCartBtn();
     }
@@ -875,48 +874,50 @@
       const errEl   = document.getElementById('om-error');
       const loadEl  = document.getElementById('om-loading');
       errEl.textContent = '';
-      if (!name)  { errEl.textContent = 'Please enter your name.';  return; }
-      if (!phone) { errEl.textContent = 'Please enter your phone.'; return; }
-      if (!email) { errEl.textContent = 'Please enter your email.'; return; }
+      if (!name)    { errEl.textContent = 'Please enter your name.';    return; }
+      if (!phone)   { errEl.textContent = 'Please enter your phone.';   return; }
+      if (!email)   { errEl.textContent = 'Please enter your email.';   return; }
       if (!address) { errEl.textContent = 'Please enter your delivery address.'; return; }
       const cart  = loadCart();
       const total = cart.reduce((a,i)=>a+i.price*i.qty,0);
       loadEl.style.display = 'block';
-      const controller = new AbortController();
-const timeout = setTimeout(() => controller.abort(), 15000);
 
-fetch('/place-order', {
-  method: 'POST',
-  headers: {'Content-Type':'application/json'},
-  body: JSON.stringify({name,phone,email,address,cart,total}),
-  signal: controller.signal
-})
-.then(r=>r.json())
-.then(data=>{
-  clearTimeout(timeout);
-  loadEl.style.display = 'none';
-  if (data.success) {
-    closeOrderForm();
-    document.getElementById('sm-order-id').textContent = '#' + data.order_id;
-    document.getElementById('success-overlay').classList.add('on');
-    saveCart([]); renderCart();
-  } else {
-    errEl.textContent = data.message || 'Something went wrong. Try again.';
-  }
-})
-.catch((err)=>{ 
-  clearTimeout(timeout);
-  loadEl.style.display='none'; 
-  if (err.name === 'AbortError') {
-    closeOrderForm();
-    document.getElementById('sm-order-id').textContent = '';
-    document.getElementById('success-overlay').classList.add('on');
-    saveCart([]); renderCart();
-  } else {
-    document.getElementById('om-error').textContent='Connection error. Please try again.';
-  }
-});
-}
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 15000);
+
+      fetch('/place-order', {
+        method:  'POST',
+        headers: {'Content-Type':'application/json'},
+        body:    JSON.stringify({name,phone,email,address,cart,total}),
+        signal:  controller.signal
+      })
+      .then(r => r.json())
+      .then(data => {
+        clearTimeout(timeout);
+        loadEl.style.display = 'none';
+        if (data.success) {
+          closeOrderForm();
+          document.getElementById('sm-order-id').textContent = '#' + data.order_id;
+          document.getElementById('success-overlay').classList.add('on');
+          saveCart([]); renderCart();
+        } else {
+          errEl.textContent = data.message || 'Something went wrong. Try again.';
+        }
+      })
+      .catch((err) => {
+        clearTimeout(timeout);
+        loadEl.style.display = 'none';
+        if (err.name === 'AbortError') {
+          closeOrderForm();
+          document.getElementById('sm-order-id').textContent = '';
+          document.getElementById('success-overlay').classList.add('on');
+          saveCart([]); renderCart();
+        } else {
+          document.getElementById('om-error').textContent = 'Connection error. Please try again.';
+        }
+      });
+    }
+
     function closeSuccess() {
       document.getElementById('success-overlay').classList.remove('on');
     }
@@ -946,7 +947,7 @@ fetch('/place-order', {
       }
     });
 
-    // ── INIT — load cart on page load ──
+    // ── INIT ──
     renderCart();
   </script>
 </body>
