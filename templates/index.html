@@ -949,5 +949,27 @@
 
     // ── INIT ──
     renderCart();
+    // ── SYNC CART ON PAGE FOCUS ──
+// Updates cart count instantly when coming back from product page
+window.addEventListener('focus', () => {
+    renderCart();
+    updateCartBtn();
+});
+
+// Also check on page visibility change (tab switch)
+document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+        renderCart();
+        updateCartBtn();
+    }
+});
+
+// Listen for localStorage changes from other pages
+window.addEventListener('storage', (e) => {
+    if (e.key === 'malikCart') {
+        renderCart();
+        updateCartBtn();
+    }
+});
   </script>
 </body>
