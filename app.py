@@ -195,8 +195,42 @@ def product_detail(id):
     related = cursor.fetchall()
     cursor.execute("SELECT * FROM product_images WHERE product_id = %s ORDER BY sort_order", (id,))
     gallery = cursor.fetchall()
+
+    # ── Fetch reviews ──
+    cursor.execute("SELECT * FROM reviews WHERE product_id = %s ORDER BY created_at DESC", (id,))
+    reviews = cursor.fetchall()
+    avg_rating = sum(r['rating'] for r in reviews) / len(reviews) if reviews else 0
+
     db.close()
-    return render_template("product_detail.html", product=product, related=related, gallery=gallery)
+    return render_template("product_detail.html", product=product, related=related,
+                           gallery=gallery, reviews=reviews, avg_rating=avg_rating)
+
+# ══════════════════════════════════════════════
+#  REVIEWS
+# ══════════════════════════════════════════════
+@app.route("/product/<int:id>/review", methods=["POST"])
+def submit_review(id):
+    customer_name = request.form.get('name', '').strip()
+    rating  = request.form.get('rating', '5')
+    comment = request.form.get('comment', '').strip()
+
+    if not customer_name:
+        flash("Please enter your name.")
+        return redirect(url_for('product_detail', id=id))
+
+    customer_id = session.get('customer_id')
+
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("""
+        INSERT INTO reviews (product_id, customer_id, customer_name, rating, comment)
+        VALUES (%s, %s, %s, %s, %s)
+    """, (id, customer_id, customer_name, int(rating), comment))
+    db.commit()
+    db.close()
+
+    flash("Thank you for your review!")
+    return redirect(url_for('product_detail', id=id) + '#reviews')
 
 @app.route("/my-orders")
 @customer_login_required
@@ -652,6 +686,7 @@ def delete_product(id):
     db.close()
     flash("Product deleted!")
     return redirect(url_for('admin_products'))
+
 @app.route("/admin/orders")
 @login_required
 def admin_orders():
@@ -664,7 +699,6 @@ def admin_orders():
     """)
     orders = cursor.fetchall()
 
-    # Fetch items for each order
     for order in orders:
         cursor.execute("""
             SELECT oi.quantity, oi.price, oi.product_id, p.Name, p.image, p.category
@@ -676,6 +710,7 @@ def admin_orders():
 
     db.close()
     return render_template("admin/orders.html", orders=orders)
+
 @app.route("/admin/orders/status/<int:id>", methods=["POST"])
 @login_required
 def update_order_status(id):
