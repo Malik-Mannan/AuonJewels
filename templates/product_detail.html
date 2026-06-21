@@ -336,59 +336,61 @@
 
     </div>
 
+    <!-- REVIEWS SECTION (now separate from related products) -->
+    <div class="reviews-section" id="reviews">
+      <div class="reviews-header">
+        <div class="reviews-title">Customer Reviews</div>
+        {% if reviews %}
+        <div class="reviews-summary">
+          <span class="avg-stars">{{ '★' * (avg_rating|round|int) }}{{ '☆' * (5 - (avg_rating|round|int)) }}</span>
+          <span class="avg-num">{{ "%.1f"|format(avg_rating) }}</span>
+          <span class="review-count">({{ reviews|length }} review{{ 's' if reviews|length != 1 else '' }})</span>
+        </div>
+        {% endif %}
+      </div>
+
+      <div class="review-form-box">
+        <div class="rf-title">Write a Review</div>
+        <form method="POST" action="{{ url_for('submit_review', id=product.ID) }}">
+          <div class="rf-row">
+            <input type="text" name="name" class="rf-input" placeholder="Your Name" required
+              value="{{ session.customer_name if session.customer_name else '' }}"/>
+            <select name="rating" class="rf-select">
+              <option value="5">★★★★★ Excellent</option>
+              <option value="4">★★★★☆ Good</option>
+              <option value="3">★★★☆☆ Average</option>
+              <option value="2">★★☆☆☆ Poor</option>
+              <option value="1">★☆☆☆☆ Bad</option>
+            </select>
+          </div>
+          <textarea name="comment" class="rf-textarea" placeholder="Share your experience with this product..."></textarea>
+          <button type="submit" class="rf-submit">Submit Review</button>
+        </form>
+      </div>
+
+      <div class="reviews-list">
+        {% for r in reviews %}
+        <div class="review-card">
+          <div class="review-top">
+            <div class="review-name">{{ r.customer_name }}</div>
+            <div class="review-stars">{{ '★' * r.rating }}{{ '☆' * (5 - r.rating) }}</div>
+          </div>
+          {% if r.comment %}
+          <div class="review-comment">{{ r.comment }}</div>
+          {% endif %}
+          <div class="review-date">{{ r.created_at.strftime('%d %b %Y') if r.created_at else '' }}</div>
+        </div>
+        {% else %}
+        <div class="no-reviews">No reviews yet. Be the first to review this product!</div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- RELATED PRODUCTS (now its own clean section) -->
     {% if related %}
     <div class="related">
       <div class="related-title">You may also like</div>
       <div class="related-grid">
-        <!-- REVIEWS SECTION -->
-<div class="reviews-section" id="reviews">
-  <div class="reviews-header">
-    <div class="reviews-title">Customer Reviews</div>
-    {% if reviews %}
-    <div class="reviews-summary">
-      <span class="avg-stars">{{ '★' * (avg_rating|round|int) }}{{ '☆' * (5 - (avg_rating|round|int)) }}</span>
-      <span class="avg-num">{{ "%.1f"|format(avg_rating) }}</span>
-      <span class="review-count">({{ reviews|length }} review{{ 's' if reviews|length != 1 else '' }})</span>
-    </div>
-    {% endif %}
-  </div>
-
-  <div class="review-form-box">
-    <div class="rf-title">Write a Review</div>
-    <form method="POST" action="{{ url_for('submit_review', id=product.ID) }}">
-      <div class="rf-row">
-        <input type="text" name="name" class="rf-input" placeholder="Your Name" required
-          value="{{ session.customer_name if session.customer_name else '' }}"/>
-        <select name="rating" class="rf-select">
-          <option value="5">★★★★★ Excellent</option>
-          <option value="4">★★★★☆ Good</option>
-          <option value="3">★★★☆☆ Average</option>
-          <option value="2">★★☆☆☆ Poor</option>
-          <option value="1">★☆☆☆☆ Bad</option>
-        </select>
-      </div>
-      <textarea name="comment" class="rf-textarea" placeholder="Share your experience with this product..."></textarea>
-      <button type="submit" class="rf-submit">Submit Review</button>
-    </form>
-  </div>
-
-  <div class="reviews-list">
-    {% for r in reviews %}
-    <div class="review-card">
-      <div class="review-top">
-        <div class="review-name">{{ r.customer_name }}</div>
-        <div class="review-stars">{{ '★' * r.rating }}{{ '☆' * (5 - r.rating) }}</div>
-      </div>
-      {% if r.comment %}
-      <div class="review-comment">{{ r.comment }}</div>
-      {% endif %}
-      <div class="review-date">{{ r.created_at.strftime('%d %b %Y') if r.created_at else '' }}</div>
-    </div>
-    {% else %}
-    <div class="no-reviews">No reviews yet. Be the first to review this product!</div>
-    {% endfor %}
-  </div>
-</div>
         {% for r in related %}
         <a href="{{ url_for('product_detail', id=r.ID) }}" class="r-card">
           <div class="r-img">
