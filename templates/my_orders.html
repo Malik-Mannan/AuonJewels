@@ -87,7 +87,13 @@
         <div class="order-header">
           <div class="order-id">Order #{{ order.ID }}</div>
           <div class="order-meta">
-            <div class="order-date">{{ order.Ordered_at.strftime('%d %b %Y, %I:%M %p') if order.Ordered_at else 'Date not available' }}</div>
+            <div class="order-date">
+  {% if order.Ordered_at %}
+    {{ (order.Ordered_at + timedelta(hours=5)).strftime('%d %b %Y, %I:%M %p') }}
+  {% else %}
+    Date not available
+  {% endif %}
+</div>
             <span class="status {{ order.Status }}">{{ order.Status }}</span>
           </div>
         </div>

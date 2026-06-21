@@ -8,10 +8,12 @@ from flask_mail import Mail, Message
 from dotenv import load_dotenv
 from urllib.parse import urlparse
 import traceback
+from datetime import timedelta
 
 load_dotenv()
 
 app = Flask(__name__)
+app.jinja_env.globals['timedelta'] = timedelta
 from werkzeug.middleware.proxy_fix import ProxyFix
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 app.jinja_env.globals['enumerate'] = enumerate
