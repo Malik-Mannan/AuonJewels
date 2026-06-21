@@ -757,6 +757,28 @@ def delete_story_image(section):
     flash(f"{section.capitalize()} image deleted!")
     return redirect(url_for('story_images'))
 
+@app.route("/create-reviews-table")
+def create_reviews_table():
+    try:
+        db = get_db()
+        cursor = db.cursor()
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS reviews (
+                ID INT AUTO_INCREMENT PRIMARY KEY,
+                product_id INT NOT NULL,
+                customer_id INT,
+                customer_name VARCHAR(100),
+                rating INT,
+                comment TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (product_id) REFERENCES Products(ID) ON DELETE CASCADE
+            )
+        """)
+        db.commit()
+        db.close()
+        return "Reviews table created successfully!"
+    except Exception as e:
+        return f"Error: {str(e)}"
 # ══════════════════════════════════════════════
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
