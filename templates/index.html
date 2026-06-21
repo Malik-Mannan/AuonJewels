@@ -659,10 +659,15 @@
     </div>
     <div class="c-items" id="cItems"><div class="c-empty">Your cart is empty</div></div>
     <div class="c-footer" id="cFooter" style="display:none;">
-      <div class="c-total"><span>Total</span><span class="c-total-num" id="cTotal">PKR 0</span></div>
-      <button class="c-checkout" onclick="openOrderForm()">✓ Place Order</button>
-      <button class="c-clear" onclick="clearCart()">Clear Cart</button>
-    </div>
+  <div class="c-total">
+    <span>Subtotal</span>
+    <span class="c-total-num" id="cTotal">PKR 0</span>
+  </div>
+  <div id="deliveryNotice"
+       style="font-size:.65rem;color:#8a7e6a;margin-bottom:.8rem;padding:.5rem;background:rgba(201,168,76,.05);border:1px solid rgba(201,168,76,.1);text-align:center;"></div>
+  <button class="c-checkout" onclick="openOrderForm()">✓ Place Order</button>
+  <button class="c-clear" onclick="clearCart()">Clear Cart</button>
+</div>
   </div>
 
   <!-- ORDER POPUP -->
@@ -671,10 +676,22 @@
       <div class="om-title">Checkout</div>
       <div class="om-sub">Fill your details to place order</div>
       <div class="om-summary">
-        <div class="om-summary-title">Your Order</div>
-        <div id="om-items-list"></div>
-        <div class="om-summary-total"><span>Total</span><span id="om-total-display">PKR 0</span></div>
-      </div>
+  <div class="om-summary-title">Your Order</div>
+  <div id="om-items-list"></div>
+  <div class="om-summary-total" style="border-top:none;padding-top:.3rem;">
+    <span>Subtotal</span>
+    <span id="om-subtotal-display">PKR 0</span>
+  </div>
+  <div class="om-summary-total" style="border-top:none;padding-top:.3rem;">
+    <span>Delivery</span>
+    <span id="om-delivery-display">PKR 250</span>
+  </div>
+  <div style="height:1px;background:rgba(201,168,76,.15);margin:.5rem 0;"></div>
+  <div class="om-summary-total">
+    <span>Total</span>
+    <span id="om-total-display">PKR 0</span>
+  </div>
+</div>
       <div class="om-field"><label class="om-label">Full Name *</label>
         <input id="om-name" class="om-input" type="text" placeholder="Sara Ahmed" value="{{ session.customer_name if session.customer_name else '' }}"/></div>
       <div class="om-field"><label class="om-label">Phone Number *</label>
@@ -715,6 +732,13 @@
     const CART_KEY = 'malikCart';
     function loadCart() { return JSON.parse(localStorage.getItem(CART_KEY) || '[]'); }
     function saveCart(c) { localStorage.setItem(CART_KEY, JSON.stringify(c)); }
+
+    // ── DELIVERY CHARGES CONFIG ──
+    const DELIVERY_CHARGE    = 250;
+    const FREE_DELIVERY_FROM = 3000;
+    function calcDelivery(subtotal) {
+      return subtotal >= FREE_DELIVERY_FROM ? 0 : DELIVERY_CHARGE;
+    }
 
     // ── CURSOR ──
     const dot=document.getElementById('cur-dot'),ring=document.getElementById('cur-ring');
@@ -847,8 +871,22 @@
             </div>
           </div>
         </div>`).join('');
-      document.getElementById('cTotal').textContent =
-        'PKR ' + cart.reduce((a,i)=>a+i.price*i.qty,0).toLocaleString();
+
+      // Subtotal in cart drawer
+      const subtotal = cart.reduce((a,i) => a + i.price * i.qty, 0);
+      document.getElementById('cTotal').textContent = 'PKR ' + subtotal.toLocaleString();
+
+      // Delivery notice in cart drawer
+      const noticeEl = document.getElementById('deliveryNotice');
+      if (noticeEl) {
+        const dc = calcDelivery(subtotal);
+        if (dc === 0) {
+          noticeEl.innerHTML = '🎉 You got <strong style="color:#6dd48a;">FREE delivery!</strong>';
+        } else {
+          const remaining = FREE_DELIVERY_FROM - subtotal;
+          noticeEl.innerHTML = `Add <strong style="color:#e8d08a;">PKR ${remaining.toLocaleString()}</strong> more for FREE delivery! · PKR 250 charge`;
+        }
+      }
     }
 
     // ── ORDER FORM ──
@@ -856,11 +894,36 @@
       if (!IS_LOGGED_IN) { document.getElementById('login-overlay').classList.add('on'); return; }
       const cart = loadCart();
       if (cart.length === 0) return;
-      const total = cart.reduce((a,i)=>a+i.price*i.qty,0);
+
+      // Calculate subtotal and delivery
+      const subtotal       = cart.reduce((a,i) => a + i.price * i.qty, 0);
+      const deliveryCharge = calcDelivery(subtotal);
+      const grandTotal     = subtotal + deliveryCharge;
+
+      // Populate items
       document.getElementById('om-items-list').innerHTML = cart.map(i=>
-        `<div class="om-summary-item"><span>${i.name} × ${i.qty}</span><span>PKR ${(i.price*i.qty).toLocaleString()}</span></div>`
+        `<div class="om-summary-item">
+           <span>${i.name} × ${i.qty}</span>
+           <span>PKR ${(i.price*i.qty).toLocaleString()}</span>
+         </div>`
       ).join('');
-      document.getElementById('om-total-display').textContent = 'PKR ' + total.toLocaleString();
+
+      // Update subtotal
+      document.getElementById('om-subtotal-display').textContent = 'PKR ' + subtotal.toLocaleString();
+
+      // Update delivery
+      const deliveryEl = document.getElementById('om-delivery-display');
+      if (deliveryCharge === 0) {
+        deliveryEl.textContent = 'FREE 🎉';
+        deliveryEl.style.color = '#6dd48a';
+      } else {
+        deliveryEl.textContent = 'PKR 250';
+        deliveryEl.style.color = '#e8d08a';
+      }
+
+      // Update grand total
+      document.getElementById('om-total-display').textContent = 'PKR ' + grandTotal.toLocaleString();
+
       document.getElementById('om-error').textContent = '';
       document.getElementById('om-loading').style.display = 'none';
       document.getElementById('order-overlay').classList.add('on');
@@ -881,8 +944,12 @@
       if (!phone)   { errEl.textContent = 'Please enter your phone.';   return; }
       if (!email)   { errEl.textContent = 'Please enter your email.';   return; }
       if (!address) { errEl.textContent = 'Please enter your delivery address.'; return; }
-      const cart  = loadCart();
-      const total = cart.reduce((a,i)=>a+i.price*i.qty,0);
+
+      const cart           = loadCart();
+      const subtotal       = cart.reduce((a,i) => a + i.price * i.qty, 0);
+      const deliveryCharge = calcDelivery(subtotal);
+      const total          = subtotal + deliveryCharge;
+
       loadEl.style.display = 'block';
 
       const controller = new AbortController();
@@ -891,8 +958,11 @@
       fetch('/place-order', {
         method:  'POST',
         headers: {'Content-Type':'application/json'},
-        body:    JSON.stringify({name,phone,email,address,cart,total}),
-        signal:  controller.signal
+        body:    JSON.stringify({
+          name, phone, email, address, cart,
+          subtotal, delivery_charge: deliveryCharge, total
+        }),
+        signal: controller.signal
       })
       .then(r => r.json())
       .then(data => {
@@ -952,27 +1022,14 @@
 
     // ── INIT ──
     renderCart();
+
     // ── SYNC CART ON PAGE FOCUS ──
-// Updates cart count instantly when coming back from product page
-window.addEventListener('focus', () => {
-    renderCart();
-    updateCartBtn();
-});
-
-// Also check on page visibility change (tab switch)
-document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible') {
-        renderCart();
-        updateCartBtn();
-    }
-});
-
-// Listen for localStorage changes from other pages
-window.addEventListener('storage', (e) => {
-    if (e.key === 'malikCart') {
-        renderCart();
-        updateCartBtn();
-    }
-});
+    window.addEventListener('focus', () => { renderCart(); updateCartBtn(); });
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') { renderCart(); updateCartBtn(); }
+    });
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'malikCart') { renderCart(); updateCartBtn(); }
+    });
   </script>
 </body>
