@@ -766,6 +766,19 @@ def create_reviews_table():
         return "Reviews table created successfully!"
     except Exception as e:
         return f"Error: {str(e)}"
+
+@app.route("/shop/<category>")
+def shop_category(category):
+    db = get_db()
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM Products WHERE category = %s AND Stock > 0", (category,))
+    products = cursor.fetchall()
+    db.close()
+    return render_template("shop_category.html", products=products, category=category)
+
+@app.route("/faq")
+def faq():
+    return render_template("faq.html")
 # ══════════════════════════════════════════════
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
