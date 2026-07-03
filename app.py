@@ -50,32 +50,19 @@ app.register_blueprint(google_bp, url_prefix="/login")
 # ══════════════════════════════════════════════
 def get_db():
     try:
-        mysql_url = os.getenv('MYSQL_URL')
-        if mysql_url:
-            url = urlparse(mysql_url)
-            conn = mysql.connector.connect(
-                host=url.hostname,
-                port=url.port or 3306,
-                user=url.username,
-                password=url.password,
-                database=url.path.strip('/'),
-                connection_timeout=30
-            )
-        else:
-            conn = mysql.connector.connect(
-                host=os.getenv('MYSQLHOST'),
-                port=int(os.getenv('MYSQLPORT', '3306')),
-                user=os.getenv('MYSQLUSER'),
-                password=os.getenv('MYSQLPASSWORD'),
-                database=os.getenv('MYSQLDATABASE', 'malikstore'),
-                connection_timeout=30
-            )
-        return conn
+        return mysql.connector.connect(
+            host=os.getenv('MYSQL_HOST'),
+            port=int(os.getenv('MYSQL_PORT', '19840')),
+            user=os.getenv('MYSQL_USER'),
+            password=os.getenv('MYSQL_PASSWORD'),
+            database=os.getenv('MYSQL_DATABASE', 'defaultdb'),
+            connection_timeout=30,
+            ssl_disabled=False
+        )
     except Exception as e:
         print(f"❌ Database Connection Error: {e}")
         traceback.print_exc()
         raise
-
 # ══════════════════════════════════════════════
 #  DECORATORS
 # ══════════════════════════════════════════════
