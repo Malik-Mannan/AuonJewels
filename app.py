@@ -803,6 +803,10 @@ def sitemap():
   <url><loc>https://auonjewels.onrender.com/faq</loc><priority>0.6</priority></url>
 </urlset>"""
     return Response(content, mimetype='application/xml')
+@app.route('/robots.txt')
+def robots():
+    content = "User-agent: *\nAllow: /\n\nSitemap: https://auonjewels.onrender.com/sitemap.xml"
+    return Response(content, mimetype='text/plain')
 # ══════════════════════════════════════════════
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
