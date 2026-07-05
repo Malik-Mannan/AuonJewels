@@ -783,14 +783,6 @@ def faq():
     return render_template("faq.html")
 
 
-@app.route('/robots.txt')
-def robots():
-    content = """User-agent: *
-Allow: /
-
-Sitemap: https://auonjewels.onrender.com/sitemap.xml"""
-    return Response(content, mimetype='text/plain')
-
 @app.route('/sitemap.xml')
 def sitemap():
     content = """<?xml version="1.0" encoding="UTF-8"?>
