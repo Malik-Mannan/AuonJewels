@@ -354,8 +354,8 @@ def place_order():
             return jsonify({"success": False, "message": "Your cart is empty."}), 400
 
         db      = get_db()
-        cursor  = db.cursor(dictionary=True)
-        cursor2 = db.cursor()
+        cursor  = db.cursor(dictionary=True, buffered=True)
+        cursor2 = db.cursor(buffered=True)
 
         # ── Check by email first, then phone separately ──
         cursor.execute("SELECT ID FROM Customers WHERE Email=%s LIMIT 1", (email,))
