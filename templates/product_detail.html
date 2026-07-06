@@ -665,6 +665,11 @@
       loadEl.style.display = 'block';
       const controller = new AbortController();
       const timeout = setTimeout(()=>controller.abort(), 15000);
+      const btn = document.querySelector('.om-btn-place');
+btn.disabled = true;
+btn.textContent = '⏳ Placing...';
+btn.style.opacity = '0.6';
+btn.style.cursor = 'not-allowed';
       fetch('/place-order', {
         method:'POST', headers:{'Content-Type':'application/json'},
         body: JSON.stringify({name,phone,email,address,cart,subtotal,delivery_charge:deliveryCharge,total}),
@@ -672,6 +677,10 @@
       })
       .then(r=>r.json())
       .then(data=>{
+        btn.disabled = false;
+btn.textContent = '✓ Place Order';
+btn.style.opacity = '1';
+btn.style.cursor = 'pointer';
         clearTimeout(timeout);
         loadEl.style.display='none';
         if (data.success) {
@@ -682,6 +691,10 @@
         } else { errEl.textContent=data.message||'Something went wrong. Try again.'; }
       })
       .catch(err=>{
+        btn.disabled = false;
+btn.textContent = '✓ Place Order';
+btn.style.opacity = '1';
+btn.style.cursor = 'pointer';
         clearTimeout(timeout);
         loadEl.style.display='none';
         if (err.name==='AbortError') {
@@ -707,23 +720,7 @@
     renderCart();
 
 
-  
-// ── DISABLE BUTTONS ON CLICK ──
-    document.querySelectorAll('button, .btn-add, .btn-checkout, .om-btn-place, .c-checkout, .rf-submit').forEach(btn => {
-      btn.addEventListener('click', function() {
-        if (this.dataset.noDisable) return;
-        const original = this.innerHTML;
-        this.disabled = true;
-        this.style.opacity = '0.6';
-        this.style.cursor = 'not-allowed';
-        setTimeout(() => {
-          this.disabled = false;
-          this.style.opacity = '';
-          this.style.cursor = '';
-          this.innerHTML = original;
-        }, 3000);
-      });
-    }); 
+
   </script>
 </body>
 </html>
