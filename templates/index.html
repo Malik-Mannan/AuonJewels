@@ -354,7 +354,6 @@
       <a href="/admin" class="m-link" onclick="closeMobileMenu()">Admin</a>
       <div class="m-divider"></div>
       {% if session.customer_id %}
-        <span class="m-user">👋 {{ session.customer_name }}</span>
         <a href="{{ url_for('my_orders') }}" class="m-link" onclick="closeMobileMenu()">My Orders</a>
         <a href="{{ url_for('customer_logout') }}" class="m-link m-logout">Logout</a>
       {% else %}
