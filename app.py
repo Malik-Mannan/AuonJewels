@@ -88,13 +88,6 @@ def customer_login_required(f):
 
 # ══════════════════════════════════════════════
 #  CUSTOMER AUTH
-# ══════════════════════════════════════════════
-@app.route("/customer-login")
-def customer_login_page():
-    if session.get('customer_id'):
-        return redirect(url_for('home'))
-    return render_template("customer/login.html")
-
 @app.route("/google-callback")
 def google_callback():
     if not google.authorized:
