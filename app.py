@@ -429,6 +429,11 @@ def place_order():
         except Exception as mail_err:
             print(f"[EMAIL ERROR] Order #{order_id} saved but email failed: {mail_err}")
 
+        try:
+            send_admin_notification_email(order_id, name, phone, email, address, order_items_for_email, total)
+        except Exception as mail_err:
+            print(f"[ADMIN EMAIL ERROR] Order #{order_id} — admin notify failed: {mail_err}")
+
         return jsonify({"success": True, "order_id": order_id})
 
     except mysql.connector.Error as db_err:
@@ -508,6 +513,66 @@ def send_order_email(to_email, name, order_id, items, total, address):
     )
     mail.send(msg)
 
+def send_admin_notification_email(order_id, customer_name, phone, email, address, items, total):
+    rows = ""
+    for item in items:
+        subtotal = item['qty'] * item['price']
+        rows += f"""
+        <tr>
+          <td style="padding:10px 14px;border-bottom:1px solid #1e1508;color:#d4c9b0;font-size:13px;">{item['name']}</td>
+          <td style="padding:10px 14px;border-bottom:1px solid #1e1508;color:#d4c9b0;font-size:13px;text-align:center;">{item['qty']}</td>
+          <td style="padding:10px 14px;border-bottom:1px solid #1e1508;color:#c9a84c;font-size:13px;text-align:right;">PKR {subtotal:,.0f}</td>
+        </tr>"""
+
+    html_body = f"""
+    <div style="background:#0a0602;padding:40px 32px;font-family:Georgia,serif;max-width:560px;margin:0 auto;">
+      <div style="text-align:center;padding-bottom:24px;margin-bottom:28px;border-bottom:1px solid #c9a84c;">
+        <h1 style="font-size:22px;font-weight:300;letter-spacing:6px;color:#c9a84c;text-transform:uppercase;margin:0;">Auon Jewels</h1>
+        <p style="font-size:10px;letter-spacing:3px;color:#8a7e6a;text-transform:uppercase;margin:6px 0 0;">New Order Alert</p>
+      </div>
+      <p style="font-size:11px;letter-spacing:3px;color:#c9a84c;text-transform:uppercase;margin-bottom:8px;">🛍 New Order Received</p>
+      <h2 style="font-size:24px;font-weight:300;color:#e8d08a;margin:0 0 20px;">Order #{order_id}</h2>
+      <div style="background:#120d04;border:1px solid #2a1f0a;padding:18px;margin-bottom:20px;">
+        <table style="width:100%;border-collapse:collapse;">
+          <tr><td style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#8a7e6a;padding:6px 0;">Customer</td>
+              <td style="font-size:14px;color:#d4c9b0;text-align:right;">{customer_name}</td></tr>
+          <tr><td style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#8a7e6a;padding:6px 0;">Phone</td>
+              <td style="font-size:14px;color:#d4c9b0;text-align:right;">{phone}</td></tr>
+          <tr><td style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#8a7e6a;padding:6px 0;">Email</td>
+              <td style="font-size:14px;color:#d4c9b0;text-align:right;">{email}</td></tr>
+          <tr><td style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#8a7e6a;padding:6px 0;">Address</td>
+              <td style="font-size:14px;color:#d4c9b0;text-align:right;">{address or 'Not provided'}</td></tr>
+        </table>
+      </div>
+      <table style="width:100%;border-collapse:collapse;margin-bottom:20px;">
+        <thead>
+          <tr style="background:#120d04;">
+            <th style="padding:8px 14px;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#8a7e6a;text-align:left;font-weight:400;">Product</th>
+            <th style="padding:8px 14px;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#8a7e6a;text-align:center;font-weight:400;">Qty</th>
+            <th style="padding:8px 14px;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#8a7e6a;text-align:right;font-weight:400;">Price</th>
+          </tr>
+        </thead>
+        <tbody>{rows}</tbody>
+      </table>
+      <div style="padding:14px;border-top:1px solid #c9a84c;display:flex;justify-content:space-between;">
+        <span style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#8a7e6a;">Total</span>
+        <span style="font-size:20px;font-weight:300;color:#e8d08a;">PKR {total:,.0f}</span>
+      </div>
+      <div style="text-align:center;margin-top:24px;">
+        <a href="https://auonjewels.onrender.com/admin/orders"
+           style="display:inline-block;padding:.7rem 2rem;background:#c9a84c;color:#0a0602;font-size:.68rem;font-weight:500;letter-spacing:.15em;text-transform:uppercase;text-decoration:none;">
+          View Order
+        </a>
+      </div>
+    </div>
+    """
+
+    msg = Message(
+        subject=f"🛍 New Order #{order_id} — {customer_name}",
+        recipients=[os.environ.get('MAIL_USERNAME')],
+        html=html_body
+    )
+    mail.send(msg)
 
 # ══════════════════════════════════════════════
 #  ADMIN ROUTES
@@ -796,6 +861,8 @@ def robots():
 @app.route("/contact")
 def contact():
     return render_template("contact.html")
+
+
 # ══════════════════════════════════════════════
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
