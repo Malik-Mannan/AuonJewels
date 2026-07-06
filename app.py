@@ -799,6 +799,10 @@ def sitemap():
 def robots():
     content = "User-agent: *\nAllow: /\n\nSitemap: https://auonjewels.onrender.com/sitemap.xml"
     return Response(content, mimetype='text/plain')
+
+@app.route("/contact")
+def contact():
+    return render_template("contact.html")
 # ══════════════════════════════════════════════
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
