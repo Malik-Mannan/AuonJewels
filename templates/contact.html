@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<link rel="icon" type="image/png" href="/static/images/logo.png">
 <title>Contact Us — Auon Jewels</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,200;0,300;0,400;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
 <style>
@@ -17,27 +18,14 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2rem;display:fl
 .nav-back{font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);text-decoration:none;border:1px solid rgba(201,168,76,.3);padding:.5rem 1.2rem;transition:all .3s;}
 .nav-back:hover{border-color:var(--gold);color:var(--gold);}
 
-/* HERO BANNER */
-.contact-hero{
-  margin-top:72px;
-  background:var(--ink);
-  padding:5rem 2rem;
-  text-align:center;
-  position:relative;
-  overflow:hidden;
-}
-.contact-hero::before{
-  content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse at center,rgba(201,168,76,.08) 0%,transparent 65%);
-}
+.contact-hero{margin-top:72px;background:var(--ink);padding:5rem 2rem;text-align:center;position:relative;overflow:hidden;}
+.contact-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(201,168,76,.08) 0%,transparent 65%);}
 .contact-hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(2.5rem,6vw,4.5rem);font-weight:200;color:#e8ddc8;position:relative;z-index:1;}
 .contact-hero p{font-size:.88rem;color:rgba(212,201,176,.55);margin-top:.8rem;letter-spacing:.05em;position:relative;z-index:1;}
 .gold-line{width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:1.2rem auto 0;}
 
-/* MAIN */
 .page{max-width:1100px;margin:0 auto;padding:4rem 2rem;}
 
-/* CONTACT CARDS */
 .contact-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-bottom:4rem;}
 .c-card{background:#fff;border:1px solid #e8e0d0;border-radius:10px;padding:2rem;text-align:center;transition:border-color .3s,box-shadow .3s,transform .3s;}
 .c-card:hover{border-color:rgba(201,168,76,.4);box-shadow:0 8px 30px rgba(201,168,76,.1);transform:translateY(-4px);}
@@ -47,10 +35,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2rem;display:fl
 .c-card a{display:inline-block;font-size:.72rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(201,168,76,.3);padding-bottom:.15rem;transition:border-color .2s;}
 .c-card a:hover{border-color:var(--gold);}
 
-/* GRID — FORM + INFO */
 .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start;}
 
-/* FORM */
 .contact-form{background:#fff;border:1px solid #e8e0d0;border-radius:10px;padding:2.5rem;}
 .form-title{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:300;color:var(--ink);margin-bottom:.4rem;}
 .form-sub{font-size:.78rem;color:var(--muted);margin-bottom:2rem;line-height:1.7;}
@@ -68,41 +54,32 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2rem;display:fl
 .submit-btn:hover span{color:var(--ink);}
 .success-msg{display:none;background:#f0faf0;border:1px solid #b8e0b8;border-radius:4px;padding:1rem;text-align:center;color:#2a6e2a;font-size:.82rem;margin-top:1rem;}
 
-/* INFO SIDE */
 .contact-info{display:flex;flex-direction:column;gap:1.5rem;}
 .info-block{background:#fff;border:1px solid #e8e0d0;border-radius:10px;padding:1.8rem;}
 .info-block h3{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:400;color:var(--ink);margin-bottom:1rem;padding-bottom:.6rem;border-bottom:1px solid #f0e8d8;}
 .info-row{display:flex;align-items:center;gap:.8rem;padding:.5rem 0;border-bottom:1px solid #f5f0e8;}
 .info-row:last-child{border-bottom:none;}
-.info-icon{font-size:1.1rem;width:30px;flex-shrink:0;}
+.info-icon{font-size:1.1rem;width:30px;flex-shrink:0;display:flex;align-items:center;}
 .info-text{flex:1;}
 .info-text span{display:block;font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:.15rem;}
 .info-text a,.info-text p{font-size:.83rem;color:var(--ink);text-decoration:none;transition:color .2s;}
 .info-text a:hover{color:var(--gold);}
 
-/* SOCIAL */
 .social-row{display:flex;gap:.8rem;margin-top:.5rem;}
 .soc-btn{width:40px;height:40px;border-radius:50%;border:1px solid #e0d8c8;display:flex;align-items:center;justify-content:center;font-size:1rem;text-decoration:none;color:var(--muted);transition:all .3s;}
 .soc-btn:hover{border-color:var(--gold);background:rgba(201,168,76,.08);color:var(--gold);}
 
-/* HOURS */
 .hours-row{display:flex;justify-content:space-between;align-items:center;padding:.5rem 0;border-bottom:1px solid #f5f0e8;font-size:.82rem;}
 .hours-row:last-child{border-bottom:none;}
 .hours-day{color:var(--muted);}
 .hours-time{color:var(--ink);font-weight:500;}
 .hours-badge{font-size:.62rem;background:#f0faf0;color:#2a6e2a;border:1px solid #b8e0b8;padding:.15rem .5rem;border-radius:10px;}
 
-/* MAP PLACEHOLDER */
 .map-block{background:#fff;border:1px solid #e8e0d0;border-radius:10px;overflow:hidden;margin-top:3rem;}
 .map-header{padding:1.5rem 2rem;border-bottom:1px solid #f0e8d8;}
 .map-header h3{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:400;color:var(--ink);}
 .map-header p{font-size:.75rem;color:var(--muted);margin-top:.2rem;}
-.map-area{height:280px;background:linear-gradient(135deg,#f5f0e8,#ede5d5);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:.8rem;}
-.map-area p{font-size:.78rem;color:var(--muted);}
-.map-pin{font-size:2.5rem;}
-.map-link{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(201,168,76,.3);}
 
-/* FOOTER */
 .page-footer{text-align:center;padding:3rem 2rem;margin-top:2rem;border-top:1px solid #e8e0d0;}
 .page-footer a{font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);text-decoration:none;}
 
@@ -121,10 +98,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2rem;display:fl
     <img src="/static/images/logo.png" alt="Auon Jewels"/>
     Auon <span>Jewels</span>
   </a>
-  <a href="/" class="nav-back">← Back</a>
+  <a href="javascript:history.back()" class="nav-back">← Back</a>
 </nav>
 
-<!-- HERO -->
 <div class="contact-hero">
   <h1>Get in Touch</h1>
   <p>We'd love to hear from you — reach out anytime!</p>
@@ -136,19 +112,25 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2rem;display:fl
   <!-- TOP CARDS -->
   <div class="contact-cards">
     <div class="c-card">
-      <div class="c-card-icon">🟢</div>
+      <div class="c-card-icon">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="30" height="30"/>
+      </div>
       <h3>WhatsApp</h3>
       <p>Chat with us directly on WhatsApp for quick replies and order queries.</p>
       <a href="https://wa.me/923293931034" target="_blank">Message us →</a>
     </div>
     <div class="c-card">
-      <div class="c-card-icon">📸</div>
+      <div class="c-card-icon">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" width="30" height="30"/>
+      </div>
       <h3>Instagram</h3>
       <p>Follow us on Instagram for new arrivals, inspiration and exclusive offers.</p>
       <a href="https://instagram.com/auon.jewels" target="_blank">Follow us →</a>
     </div>
     <div class="c-card">
-      <div class="c-card-icon">📘</div>
+      <div class="c-card-icon">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" width="30" height="30"/>
+      </div>
       <h3>Facebook</h3>
       <p>Like our Facebook page to stay updated with latest collections and deals.</p>
       <a href="https://facebook.com/AuonJewels" target="_blank">Like our page →</a>
@@ -210,7 +192,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2rem;display:fl
       <div class="info-block">
         <h3>Contact Information</h3>
         <div class="info-row">
-          <div class="info-icon">🟢</div>
+          <div class="info-icon">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="22" height="22"/>
+          </div>
           <div class="info-text">
             <span>WhatsApp</span>
             <a href="https://wa.me/923293931034" target="_blank">+92 329 393 1034</a>
@@ -220,7 +204,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2rem;display:fl
           <div class="info-icon">📧</div>
           <div class="info-text">
             <span>Email</span>
-            <a href="mailto:ma.abmanan@gmail.com">ma.abmanan@gmail.com</a>
+            <a href="mailto:auonjewels@gmail.com">auonjewels@gmail.com</a>
           </div>
         </div>
         <div class="info-row">
@@ -263,9 +247,15 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2rem;display:fl
         <h3>Follow Us</h3>
         <p style="font-size:.78rem;color:var(--muted);margin-bottom:1rem;">Stay connected for new arrivals and exclusive offers!</p>
         <div class="social-row">
-          <a href="https://instagram.com/auon.jewels" target="_blank" class="soc-btn" title="Instagram">📸</a>
-          <a href="https://facebook.com/AuonJewels" target="_blank" class="soc-btn" title="Facebook">📘</a>
-          <a href="https://wa.me/923293931034" target="_blank" class="soc-btn" title="WhatsApp">🟢</a>
+          <a href="https://instagram.com/auon.jewels" target="_blank" class="soc-btn" title="Instagram">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" width="20" height="20"/>
+          </a>
+          <a href="https://facebook.com/AuonJewels" target="_blank" class="soc-btn" title="Facebook">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" width="20" height="20"/>
+          </a>
+          <a href="https://wa.me/923293931034" target="_blank" class="soc-btn" title="WhatsApp">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="20" height="20"/>
+          </a>
         </div>
       </div>
 
@@ -278,11 +268,10 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2rem;display:fl
       <h3>We Deliver to Your Doorstep</h3>
       <p>Serving all areas of Karachi and delivering across Pakistan</p>
     </div>
-    <div class="map-area">
-      <div class="map-pin">📍</div>
-      <p>Karachi, Pakistan</p>
-      <a href="https://maps.google.com/?q=Karachi,Pakistan" target="_blank" class="map-link">View on Google Maps →</a>
-    </div>
+    <iframe
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d462317.8454405075!2d66.68149895!3d25.1932697!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3eb33e06651d4bbf%3A0x9cf92f44555a0c23!2sKarachi%2C%20Karachi%20City%2C%20Sindh%2C%20Pakistan!5e0!3m2!1sen!2s!4v1717000000000!5m2!1sen!2s"
+      width="100%" height="300" style="border:0;display:block;" allowfullscreen="" loading="lazy">
+    </iframe>
   </div>
 
   <div class="page-footer">
@@ -299,12 +288,29 @@ function submitForm(e){
     btn.style.opacity='1';
     document.getElementById('successMsg').style.display='block';
     document.getElementById('contactForm').reset();
-    // redirect to whatsapp
     setTimeout(()=>{
       window.open('https://wa.me/923293931034?text=Hi! I just sent a message through your website contact form.','_blank');
     },1500);
   },1000);
+  
 }
+// ── DISABLE BUTTONS ON CLICK ──
+document.querySelectorAll('button, .btn-add, .btn-checkout, .btn-wa, .om-btn-place, .c-checkout, .rf-submit, .submit-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    if (this.dataset.noDisable) return; // skip cart +/- buttons
+    const original = this.innerHTML;
+    this.disabled = true;
+    this.style.opacity = '0.6';
+    this.style.cursor = 'not-allowed';
+    // Re-enable after 3 seconds in case of error
+    setTimeout(() => {
+      this.disabled = false;
+      this.style.opacity = '';
+      this.style.cursor = '';
+      this.innerHTML = original;
+    }, 3000);
+  });
+});
 </script>
 </body>
 </html>

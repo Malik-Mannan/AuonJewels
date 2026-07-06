@@ -26,7 +26,6 @@
     .container{max-width:1100px;margin:0 auto;padding:4rem 3.5rem;}
     .product-wrap{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start;}
 
-    /* IMAGE GALLERY */
     .img-frame{position:relative;width:100%;aspect-ratio:1;border:1px solid rgba(201,168,76,.15);background:linear-gradient(135deg,#120d04,#1a1208);overflow:hidden;}
     .img-corner{position:absolute;width:20px;height:20px;border-color:var(--gold);border-style:solid;z-index:5;}
     .img-corner.tl{top:-1px;left:-1px;border-width:1px 0 0 1px;}
@@ -34,7 +33,6 @@
     .stock-badge{position:absolute;top:14px;left:14px;background:var(--gold);color:var(--ink);font-size:.55rem;letter-spacing:.15em;text-transform:uppercase;padding:.25rem .7rem;font-weight:500;z-index:5;}
     .stock-badge.out{background:#333;color:#888;}
 
-    /* SLIDESHOW */
     .slides{position:absolute;inset:0;}
     .slide{position:absolute;inset:0;opacity:0;transition:opacity .7s ease;display:flex;align-items:center;justify-content:center;}
     .slide.active{opacity:1;}
@@ -171,34 +169,33 @@
       .product-wrap{grid-template-columns:1fr;}
       nav{padding:1.2rem 1.5rem;}
       .container{padding:2rem 1.5rem;}
-
     }
+
     .reviews-section{margin-top:4rem;border-top:1px solid rgba(201,168,76,.1);padding-top:3rem;}
-.reviews-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem;flex-wrap:wrap;gap:1rem;}
-.reviews-title{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:300;color:#e8ddc8;}
-.reviews-summary{display:flex;align-items:center;gap:.6rem;}
-.avg-stars{color:var(--gold);font-size:1.1rem;letter-spacing:2px;}
-.avg-num{font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--gold-light);}
-.review-count{font-size:.75rem;color:var(--muted);}
-.review-form-box{background:#0f0a03;border:1px solid rgba(201,168,76,.1);padding:1.8rem;margin-bottom:2.5rem;}
-.rf-title{font-size:.62rem;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);margin-bottom:1.2rem;}
-.rf-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;}
-.rf-input,.rf-select{background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.15);color:#d4c9b0;padding:.7rem 1rem;font-size:.82rem;font-family:'DM Sans',sans-serif;outline:none;}
-.rf-input:focus,.rf-select:focus{border-color:rgba(201,168,76,.5);}
-.rf-textarea{width:100%;background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.15);color:#d4c9b0;padding:.8rem 1rem;font-size:.82rem;font-family:'DM Sans',sans-serif;outline:none;min-height:80px;resize:vertical;margin-bottom:1rem;}
-.rf-textarea:focus{border-color:rgba(201,168,76,.5);}
-.rf-submit{padding:.75rem 2rem;background:var(--gold);color:var(--ink);font-size:.68rem;font-weight:500;letter-spacing:.15em;text-transform:uppercase;border:none;cursor:none;font-family:'DM Sans',sans-serif;transition:all .2s;}
-.rf-submit:hover{background:var(--gold-light);}
-.reviews-list{display:flex;flex-direction:column;gap:1.2rem;}
-.review-card{background:#0f0a03;border:1px solid rgba(201,168,76,.08);padding:1.3rem 1.5rem;}
-.review-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;}
-.review-name{font-size:.85rem;color:#e8ddc8;font-weight:500;}
-.review-stars{color:var(--gold);font-size:.85rem;letter-spacing:1px;}
-.review-comment{font-size:.8rem;color:rgba(212,201,176,.7);line-height:1.7;margin-bottom:.6rem;}
-.review-date{font-size:.62rem;color:var(--muted);letter-spacing:.05em;}
-.no-reviews{text-align:center;padding:2rem;color:var(--muted);font-size:.82rem;}
-@media(max-width:600px){.rf-row{grid-template-columns:1fr;}
-}
+    .reviews-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem;flex-wrap:wrap;gap:1rem;}
+    .reviews-title{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:300;color:#e8ddc8;}
+    .reviews-summary{display:flex;align-items:center;gap:.6rem;}
+    .avg-stars{color:var(--gold);font-size:1.1rem;letter-spacing:2px;}
+    .avg-num{font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--gold-light);}
+    .review-count{font-size:.75rem;color:var(--muted);}
+    .review-form-box{background:#0f0a03;border:1px solid rgba(201,168,76,.1);padding:1.8rem;margin-bottom:2.5rem;}
+    .rf-title{font-size:.62rem;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);margin-bottom:1.2rem;}
+    .rf-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;}
+    .rf-input,.rf-select{background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.15);color:#d4c9b0;padding:.7rem 1rem;font-size:.82rem;font-family:'DM Sans',sans-serif;outline:none;}
+    .rf-input:focus,.rf-select:focus{border-color:rgba(201,168,76,.5);}
+    .rf-textarea{width:100%;background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.15);color:#d4c9b0;padding:.8rem 1rem;font-size:.82rem;font-family:'DM Sans',sans-serif;outline:none;min-height:80px;resize:vertical;margin-bottom:1rem;}
+    .rf-textarea:focus{border-color:rgba(201,168,76,.5);}
+    .rf-submit{padding:.75rem 2rem;background:var(--gold);color:var(--ink);font-size:.68rem;font-weight:500;letter-spacing:.15em;text-transform:uppercase;border:none;cursor:none;font-family:'DM Sans',sans-serif;transition:all .2s;}
+    .rf-submit:hover{background:var(--gold-light);}
+    .reviews-list{display:flex;flex-direction:column;gap:1.2rem;}
+    .review-card{background:#0f0a03;border:1px solid rgba(201,168,76,.08);padding:1.3rem 1.5rem;}
+    .review-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;}
+    .review-name{font-size:.85rem;color:#e8ddc8;font-weight:500;}
+    .review-stars{color:var(--gold);font-size:.85rem;letter-spacing:1px;}
+    .review-comment{font-size:.8rem;color:rgba(212,201,176,.7);line-height:1.7;margin-bottom:.6rem;}
+    .review-date{font-size:.62rem;color:var(--muted);letter-spacing:.05em;}
+    .no-reviews{text-align:center;padding:2rem;color:var(--muted);font-size:.82rem;}
+    @media(max-width:600px){.rf-row{grid-template-columns:1fr;}}
   </style>
 </head>
 <body>
@@ -210,7 +207,7 @@
     <a href="/" class="nav-logo">Auon<span>store</span></a>
     <div class="nav-right">
       <a href="javascript:history.back()" class="nav-back">← Back to Shop</a>
-      <button class="cart-btn" id="cartBtn">Cart (0)</button>
+      <button class="cart-btn" id="cartBtn" data-no-disable>Cart (0)</button>
     </div>
   </nav>
 
@@ -260,8 +257,8 @@
           </div>
 
           {% if all_images|length > 1 %}
-          <button class="slide-prev" onclick="changeSlide(-1)">‹</button>
-          <button class="slide-next" onclick="changeSlide(1)">›</button>
+          <button class="slide-prev" onclick="changeSlide(-1)" data-no-disable>‹</button>
+          <button class="slide-next" onclick="changeSlide(1)" data-no-disable>›</button>
           <div class="slide-dots">
             {% for img in all_images %}
             <div class="dot {% if loop.first %}active{% endif %}"
@@ -310,7 +307,6 @@
         {% endif %}
         <div class="divider"></div>
 
-        <!-- DELIVERY NOTICE on product page -->
         <div id="productDeliveryNote"
              style="font-size:.72rem;padding:.6rem 1rem;background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.12);margin-bottom:1rem;color:#8a7e6a;letter-spacing:.03em;">
           🚚 Delivery: <strong style="color:#e8d08a;">PKR 250</strong> · Free above <strong style="color:#6dd48a;">PKR 3,000</strong>
@@ -320,9 +316,9 @@
         <div class="qty-wrap">
           <span class="qty-label">Quantity</span>
           <div class="qty-controls">
-            <button class="qty-btn" onclick="changeQty(-1)">−</button>
+            <button class="qty-btn" onclick="changeQty(-1)" data-no-disable>−</button>
             <div class="qty-num" id="qtyNum">1</div>
-            <button class="qty-btn" onclick="changeQty(1)">+</button>
+            <button class="qty-btn" onclick="changeQty(1)" data-no-disable>+</button>
           </div>
         </div>
         <button class="btn-add" onclick="addToCart()">Add to Cart</button>
@@ -336,7 +332,7 @@
 
     </div>
 
-    <!-- REVIEWS SECTION (now separate from related products) -->
+    <!-- REVIEWS SECTION -->
     <div class="reviews-section" id="reviews">
       <div class="reviews-header">
         <div class="reviews-title">Customer Reviews</div>
@@ -386,7 +382,7 @@
       </div>
     </div>
 
-    <!-- RELATED PRODUCTS (now its own clean section) -->
+    <!-- RELATED PRODUCTS -->
     {% if related %}
     <div class="related">
       <div class="related-title">You may also like</div>
@@ -419,7 +415,7 @@
   <div id="c-drawer">
     <div class="c-header">
       <div class="c-title">Your Cart</div>
-      <button class="c-close" id="cClose">✕</button>
+      <button class="c-close" id="cClose" data-no-disable>✕</button>
     </div>
     <div class="c-items" id="cItems">
       <div class="c-empty">Your cart is empty</div>
@@ -429,15 +425,14 @@
         <span>Subtotal</span>
         <span class="c-total-num" id="cTotal">PKR 0</span>
       </div>
-      <!-- Delivery notice in cart -->
       <div id="deliveryNotice"
            style="font-size:.65rem;color:#8a7e6a;margin-bottom:.8rem;padding:.5rem;background:rgba(201,168,76,.05);border:1px solid rgba(201,168,76,.1);text-align:center;"></div>
       <button class="c-checkout" onclick="openOrderForm()">✓ Place Order</button>
-      <button class="c-clear" onclick="clearCart()">Clear Cart</button>
+      <button class="c-clear" onclick="clearCart()" data-no-disable>Clear Cart</button>
     </div>
   </div>
 
-  <!-- ORDER CHECKOUT POPUP -->
+  <!-- ORDER POPUP -->
   <div id="order-overlay">
     <div id="order-modal">
       <div class="om-title">Checkout</div>
@@ -445,19 +440,15 @@
       <div class="om-summary">
         <div class="om-summary-title">Your Order</div>
         <div id="om-items-list"></div>
-        <!-- Subtotal -->
         <div class="om-summary-total" style="border-top:none;padding-top:.3rem;">
           <span>Subtotal</span>
           <span id="om-subtotal-display">PKR 0</span>
         </div>
-        <!-- Delivery -->
         <div class="om-summary-total" style="border-top:none;padding-top:.3rem;">
           <span>Delivery</span>
           <span id="om-delivery-display">PKR 250</span>
         </div>
-        <!-- Divider -->
         <div style="height:1px;background:rgba(201,168,76,.15);margin:.5rem 0;"></div>
-        <!-- Grand Total -->
         <div class="om-summary-total">
           <span>Total</span>
           <span id="om-total-display">PKR 0</span>
@@ -486,7 +477,7 @@
       <div id="om-loading">⏳ Placing your order...</div>
       <div class="om-actions">
         <button class="om-btn-place" onclick="submitOrder()">✓ Place Order</button>
-        <button class="om-btn-cancel" onclick="closeOrderForm()">Cancel</button>
+        <button class="om-btn-cancel" onclick="closeOrderForm()" data-no-disable>Cancel</button>
       </div>
     </div>
   </div>
@@ -513,8 +504,6 @@
     const PRODUCT_NAME  = {{ product.Name | tojson }};
     const PRODUCT_PRICE = {{ "%.0f"|format(product.price) }};
     const CART_KEY      = 'malikCart';
-
-    // ── DELIVERY CHARGES CONFIG ──
     const DELIVERY_CHARGE    = 250;
     const FREE_DELIVERY_FROM = 3000;
 
@@ -530,7 +519,6 @@
     const slides = document.querySelectorAll('.slide');
     const dots   = document.querySelectorAll('.dot');
     let autoTimer;
-
     function goToSlide(n) {
       slides[currentSlide].classList.remove('active');
       if(dots[currentSlide]) dots[currentSlide].classList.remove('active');
@@ -552,20 +540,12 @@
     }
 
     // ── CART ──
-    function loadCart() {
-      const local = localStorage.getItem(CART_KEY);
-      return local ? JSON.parse(local) : [];
-    }
+    function loadCart() { return JSON.parse(localStorage.getItem(CART_KEY) || '[]'); }
     function saveCart(cart) {
       localStorage.setItem(CART_KEY, JSON.stringify(cart));
-      const total = cart.reduce((a,i) => a + i.qty, 0);
-      localStorage.setItem('cartCount', total);
+      localStorage.setItem('cartCount', cart.reduce((a,i)=>a+i.qty,0));
     }
-
-    // ── DELIVERY CALC ──
-    function calcDelivery(subtotal) {
-      return subtotal >= FREE_DELIVERY_FROM ? 0 : DELIVERY_CHARGE;
-    }
+    function calcDelivery(subtotal) { return subtotal >= FREE_DELIVERY_FROM ? 0 : DELIVERY_CHARGE; }
 
     function addToCart() {
       if (!IS_LOGGED_IN) { document.getElementById('login-overlay').classList.add('on'); return; }
@@ -573,10 +553,7 @@
       const existing = cart.find(i => i.name === PRODUCT_NAME);
       if (existing) { existing.qty = Math.min(maxStock, existing.qty + selectedQty); }
       else { cart.push({ name: PRODUCT_NAME, price: PRODUCT_PRICE, qty: selectedQty }); }
-      saveCart(cart);
-      renderCart();
-      showToast('Added to cart ✓');
-      openCart();
+      saveCart(cart); renderCart(); showToast('Added to cart ✓'); openCart();
     }
 
     function buyNow() {
@@ -585,9 +562,7 @@
       const existing = cart.find(i => i.name === PRODUCT_NAME);
       if (existing) { existing.qty = Math.min(maxStock, existing.qty + selectedQty); }
       else { cart.push({ name: PRODUCT_NAME, price: PRODUCT_PRICE, qty: selectedQty }); }
-      saveCart(cart);
-      renderCart();
-      openOrderForm();
+      saveCart(cart); renderCart(); openOrderForm();
     }
 
     function changeCartQty(name, delta) {
@@ -599,12 +574,11 @@
       saveCart(cart); renderCart(); updateCartBtn();
     }
 
-    function removeItem(name) { saveCart(loadCart().filter(i => i.name !== name)); renderCart(); updateCartBtn(); }
+    function removeItem(name) { saveCart(loadCart().filter(i=>i.name!==name)); renderCart(); updateCartBtn(); }
     function clearCart()      { saveCart([]); renderCart(); updateCartBtn(); }
 
     function updateCartBtn() {
-      const total = loadCart().reduce((a,i) => a + i.qty, 0);
-      document.getElementById('cartBtn').textContent = `Cart (${total})`;
+      document.getElementById('cartBtn').textContent = `Cart (${loadCart().reduce((a,i)=>a+i.qty,0)})`;
     }
 
     function renderCart() {
@@ -614,8 +588,7 @@
       updateCartBtn();
       if (cart.length === 0) {
         el.innerHTML = '<div class="c-empty">Your cart is empty</div>';
-        footer.style.display = 'none';
-        return;
+        footer.style.display = 'none'; return;
       }
       footer.style.display = 'block';
       el.innerHTML = cart.map(i=>`
@@ -625,28 +598,21 @@
             <div class="c-item-name">${i.name}</div>
             <div class="c-item-price">PKR ${(i.price*i.qty).toLocaleString()}</div>
             <div class="c-item-controls">
-              <button class="c-qty-btn" onclick="changeCartQty('${i.name}',-1)">−</button>
+              <button class="c-qty-btn" onclick="changeCartQty('${i.name}',-1)" data-no-disable>−</button>
               <span class="c-qty-num">${i.qty}</span>
-              <button class="c-qty-btn" onclick="changeCartQty('${i.name}',1)">+</button>
-              <button class="c-remove" onclick="removeItem('${i.name}')">✕ remove</button>
+              <button class="c-qty-btn" onclick="changeCartQty('${i.name}',1)" data-no-disable>+</button>
+              <button class="c-remove" onclick="removeItem('${i.name}')" data-no-disable>✕ remove</button>
             </div>
           </div>
         </div>`).join('');
-
-      // Subtotal in cart
-      const subtotal = cart.reduce((a,i) => a + i.price * i.qty, 0);
+      const subtotal = cart.reduce((a,i)=>a+i.price*i.qty,0);
       document.getElementById('cTotal').textContent = 'PKR ' + subtotal.toLocaleString();
-
-      // Delivery notice in cart drawer
       const noticeEl = document.getElementById('deliveryNotice');
       if (noticeEl) {
         const dc = calcDelivery(subtotal);
-        if (dc === 0) {
-          noticeEl.innerHTML = '🎉 You got <strong style="color:#6dd48a;">FREE delivery!</strong>';
-        } else {
-          const remaining = FREE_DELIVERY_FROM - subtotal;
-          noticeEl.innerHTML = `Add <strong style="color:#e8d08a;">PKR ${remaining.toLocaleString()}</strong> more for FREE delivery! · PKR 250 charge`;
-        }
+        noticeEl.innerHTML = dc === 0
+          ? '🎉 You got <strong style="color:#6dd48a;">FREE delivery!</strong>'
+          : `Add <strong style="color:#e8d08a;">PKR ${(FREE_DELIVERY_FROM-subtotal).toLocaleString()}</strong> more for FREE delivery! · PKR 250 charge`;
       }
     }
 
@@ -661,36 +627,17 @@
       if (!IS_LOGGED_IN) { document.getElementById('login-overlay').classList.add('on'); return; }
       const cart = loadCart();
       if (cart.length === 0) return;
-
-      // Calculate subtotal and delivery
-      const subtotal      = cart.reduce((a,i) => a + i.price * i.qty, 0);
+      const subtotal       = cart.reduce((a,i)=>a+i.price*i.qty,0);
       const deliveryCharge = calcDelivery(subtotal);
-      const grandTotal    = subtotal + deliveryCharge;
-
-      // Populate items
+      const grandTotal     = subtotal + deliveryCharge;
       document.getElementById('om-items-list').innerHTML = cart.map(i=>
-        `<div class="om-summary-item">
-           <span>${i.name} × ${i.qty}</span>
-           <span>PKR ${(i.price*i.qty).toLocaleString()}</span>
-         </div>`
+        `<div class="om-summary-item"><span>${i.name} × ${i.qty}</span><span>PKR ${(i.price*i.qty).toLocaleString()}</span></div>`
       ).join('');
-
-      // Update subtotal
       document.getElementById('om-subtotal-display').textContent = 'PKR ' + subtotal.toLocaleString();
-
-      // Update delivery
       const deliveryEl = document.getElementById('om-delivery-display');
-      if (deliveryCharge === 0) {
-        deliveryEl.textContent = 'FREE 🎉';
-        deliveryEl.style.color = '#6dd48a';
-      } else {
-        deliveryEl.textContent = 'PKR 250';
-        deliveryEl.style.color = '#e8d08a';
-      }
-
-      // Update grand total
+      if (deliveryCharge === 0) { deliveryEl.textContent='FREE 🎉'; deliveryEl.style.color='#6dd48a'; }
+      else { deliveryEl.textContent='PKR 250'; deliveryEl.style.color='#e8d08a'; }
       document.getElementById('om-total-display').textContent = 'PKR ' + grandTotal.toLocaleString();
-
       document.getElementById('om-error').textContent = '';
       document.getElementById('om-loading').style.display = 'none';
       document.getElementById('order-overlay').classList.add('on');
@@ -707,82 +654,74 @@
       const errEl   = document.getElementById('om-error');
       const loadEl  = document.getElementById('om-loading');
       errEl.textContent = '';
-      if (!name)    { errEl.textContent = 'Please enter your name.';    return; }
-      if (!phone)   { errEl.textContent = 'Please enter your phone.';   return; }
-      if (!email)   { errEl.textContent = 'Please enter your email.';   return; }
-      if (!address) { errEl.textContent = 'Please enter your address.'; return; }
-
+      if (!name)    { errEl.textContent='Please enter your name.';    return; }
+      if (!phone)   { errEl.textContent='Please enter your phone.';   return; }
+      if (!email)   { errEl.textContent='Please enter your email.';   return; }
+      if (!address) { errEl.textContent='Please enter your address.'; return; }
       const cart           = loadCart();
-      const subtotal       = cart.reduce((a,i) => a + i.price * i.qty, 0);
+      const subtotal       = cart.reduce((a,i)=>a+i.price*i.qty,0);
       const deliveryCharge = calcDelivery(subtotal);
       const total          = subtotal + deliveryCharge;
-
       loadEl.style.display = 'block';
-
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 15000);
-
+      const timeout = setTimeout(()=>controller.abort(), 15000);
       fetch('/place-order', {
-        method:  'POST',
-        headers: {'Content-Type':'application/json'},
-        body:    JSON.stringify({
-          name, phone, email, address, cart,
-          subtotal, delivery_charge: deliveryCharge, total
-        }),
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({name,phone,email,address,cart,subtotal,delivery_charge:deliveryCharge,total}),
         signal: controller.signal
       })
-      .then(r => r.json())
-      .then(data => {
+      .then(r=>r.json())
+      .then(data=>{
         clearTimeout(timeout);
-        loadEl.style.display = 'none';
+        loadEl.style.display='none';
         if (data.success) {
           closeOrderForm();
-          document.getElementById('sm-order-id').textContent = '#' + data.order_id;
+          document.getElementById('sm-order-id').textContent='#'+data.order_id;
           document.getElementById('success-overlay').classList.add('on');
           saveCart([]); renderCart();
-        } else {
-          errEl.textContent = data.message || 'Something went wrong. Try again.';
-        }
+        } else { errEl.textContent=data.message||'Something went wrong. Try again.'; }
       })
-      .catch((err) => {
+      .catch(err=>{
         clearTimeout(timeout);
-        loadEl.style.display = 'none';
-        if (err.name === 'AbortError') {
+        loadEl.style.display='none';
+        if (err.name==='AbortError') {
           closeOrderForm();
-          document.getElementById('sm-order-id').textContent = '';
           document.getElementById('success-overlay').classList.add('on');
           saveCart([]); renderCart();
-        } else {
-          errEl.textContent = 'Connection error. Please try again.';
-        }
+        } else { errEl.textContent='Connection error. Please try again.'; }
       });
     }
 
-    function closeSuccess() {
-      document.getElementById('success-overlay').classList.remove('on');
-      window.location.href = '/';
-    }
+    function closeSuccess() { document.getElementById('success-overlay').classList.remove('on'); window.location.href='/'; }
 
     function showToast(msg) {
-      const existing = document.getElementById('toast');
-      if (existing) {
-        existing.textContent = msg;
-        existing.classList.add('show');
-        setTimeout(() => existing.classList.remove('show'), 2500);
-      }
+      const t=document.getElementById('toast');
+      t.textContent=msg; t.classList.add('show');
+      setTimeout(()=>t.classList.remove('show'),2500);
     }
 
-    // ── SYNC CART ON PAGE FOCUS ──
-    window.addEventListener('focus', () => { renderCart(); updateCartBtn(); });
-    document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'visible') { renderCart(); updateCartBtn(); }
-    });
-    window.addEventListener('storage', (e) => {
-      if (e.key === 'malikCart') { renderCart(); updateCartBtn(); }
-    });
+    window.addEventListener('focus',()=>{renderCart();updateCartBtn();});
+    document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){renderCart();updateCartBtn();}});
+    window.addEventListener('storage',e=>{if(e.key==='malikCart'){renderCart();updateCartBtn();}});
 
-    // ── INIT ──
     renderCart();
+
+    // ── DISABLE BUTTONS ON CLICK ──
+    document.querySelectorAll('button, .btn-add, .btn-checkout, .om-btn-place, .c-checkout, .rf-submit').forEach(btn => {
+      btn.addEventListener('click', function() {
+        if (this.dataset.noDisable) return;
+        const original = this.innerHTML;
+        this.disabled = true;
+        this.style.opacity = '0.6';
+        this.style.cursor = 'not-allowed';
+        setTimeout(() => {
+          this.disabled = false;
+          this.style.opacity = '';
+          this.style.cursor = '';
+          this.innerHTML = original;
+        }, 3000);
+      });
+    });
   </script>
 </body>
 </html>

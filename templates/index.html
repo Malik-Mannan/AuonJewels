@@ -1018,5 +1018,22 @@
     window.addEventListener('storage', (e) => {
       if (e.key === 'malikCart') { renderCart(); updateCartBtn(); }
     });
+    // ── DISABLE BUTTONS ON CLICK ──
+document.querySelectorAll('button, .btn-add, .btn-checkout, .btn-wa, .om-btn-place, .c-checkout, .rf-submit, .submit-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    if (this.dataset.noDisable) return; // skip cart +/- buttons
+    const original = this.innerHTML;
+    this.disabled = true;
+    this.style.opacity = '0.6';
+    this.style.cursor = 'not-allowed';
+    // Re-enable after 3 seconds in case of error
+    setTimeout(() => {
+      this.disabled = false;
+      this.style.opacity = '';
+      this.style.cursor = '';
+      this.innerHTML = original;
+    }, 3000);
+  });
+});
   </script>
 </body>
