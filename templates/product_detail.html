@@ -706,22 +706,22 @@
 
     renderCart();
 
-    // ── DISABLE BUTTONS ON CLICK ──
-    document.querySelectorAll('button, .btn-add, .btn-checkout, .om-btn-place, .c-checkout, .rf-submit').forEach(btn => {
-      btn.addEventListener('click', function() {
-        if (this.dataset.noDisable) return;
-        const original = this.innerHTML;
-        this.disabled = true;
-        this.style.opacity = '0.6';
-        this.style.cursor = 'not-allowed';
-        setTimeout(() => {
-          this.disabled = false;
-          this.style.opacity = '';
-          this.style.cursor = '';
-          this.innerHTML = original;
-        }, 3000);
-      });
-    });
+    // ── DISABLE BUTTONS ON CLICK (generic, chhota tasks ke liye) ──
+document.querySelectorAll('button, .btn-add, .btn-checkout, .c-checkout, .rf-submit').forEach(btn => {
+  btn.addEventListener('click', function() {
+    if (this.dataset.noDisable) return;
+    const original = this.innerHTML;
+    this.disabled = true;
+    this.style.opacity = '0.6';
+    this.style.cursor = 'not-allowed';
+    setTimeout(() => {
+      this.disabled = false;
+      this.style.opacity = '';
+      this.style.cursor = '';
+      this.innerHTML = original;
+    }, 3000);
+  });
+});
   </script>
 </body>
 </html>
