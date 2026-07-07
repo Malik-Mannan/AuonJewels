@@ -4,13 +4,12 @@ import mysql.connector
 import os
 from werkzeug.utils import secure_filename
 from flask_dance.contrib.google import make_google_blueprint, google
-from flask_mail import Mail, Message
 from dotenv import load_dotenv
 from urllib.parse import urlparse
 import traceback
 from datetime import timedelta
 from flask import Response
-
+import requests
 
 load_dotenv()
 
@@ -26,16 +25,29 @@ ADMIN_USERNAME = os.environ.get('ADMIN_USERNAME')
 ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD')
 
 # ══════════════════════════════════════════════
-#  EMAIL CONFIG
+#  EMAIL CONFIG (Brevo API)
 # ══════════════════════════════════════════════
-app.config['MAIL_SERVER']         = os.environ.get('MAIL_SERVER')
-app.config['MAIL_PORT']           = 587
-app.config['MAIL_USE_TLS']        = True
-app.config['MAIL_USE_SSL']        = False
-app.config['MAIL_USERNAME']       = os.environ.get('MAIL_USERNAME')
-app.config['MAIL_PASSWORD']       = os.environ.get('MAIL_PASSWORD')
-app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_USERNAME')
-mail = Mail(app)
+BREVO_API_KEY      = os.environ.get('BREVO_API_KEY')
+BREVO_SENDER_EMAIL = os.environ.get('BREVO_SENDER_EMAIL')
+BREVO_SENDER_NAME  = os.environ.get('BREVO_SENDER_NAME', 'Auon Jewels')
+
+def send_email_brevo(to_email, to_name, subject, html_content):
+    url = "https://api.brevo.com/v3/smtp/email"
+    headers = {
+        "accept": "application/json",
+        "api-key": BREVO_API_KEY,
+        "content-type": "application/json"
+    }
+    payload = {
+        "sender": {"name": BREVO_SENDER_NAME, "email": BREVO_SENDER_EMAIL},
+        "to": [{"email": to_email, "name": to_name}],
+        "subject": subject,
+        "htmlContent": html_content
+    }
+    response = requests.post(url, json=payload, headers=headers, timeout=15)
+    if response.status_code not in (200, 201):
+        raise Exception(f"Brevo API error {response.status_code}: {response.text}")
+    return response.json()
 # ══════════════════════════════════════════════
 #  GOOGLE OAUTH
 # ══════════════════════════════════════════════
@@ -252,16 +264,15 @@ def my_orders():
 @app.route("/test-email")
 def test_email():
     try:
-        msg = Message(
+        send_email_brevo(
+            to_email=BREVO_SENDER_EMAIL,
+            to_name="Admin",
             subject="Test — Auon Store",
-            recipients=[os.environ.get('MAIL_USERNAME')],
-            body="Email is working!"
+            html_content="<p>Email is working!</p>"
         )
-        mail.send(msg)
         return "Email sent successfully!"
     except Exception as e:
-        import traceback
-        return f"<pre>Email failed:\n{traceback.format_exc()}</pre>"
+        return f"<pre>Email failed:\n{str(e)}</pre>"
 # ══════════════════════════════════════════════
 #  STOCK ALERT SYSTEM
 # ══════════════════════════════════════════════
@@ -515,12 +526,12 @@ def send_order_email(to_email, name, order_id, items, total, address):
     </div>
     """
 
-    msg = Message(
+    send_email_brevo(
+        to_email=to_email,
+        to_name=name,
         subject=f"Order Confirmed #{order_id} — Auon Jewels",
-        recipients=[to_email],
-        html=html_body
+        html_content=html_body
     )
-    mail.send(msg)
 
 def send_admin_notification_email(order_id, customer_name, phone, email, address, items, total):
     rows = ""
