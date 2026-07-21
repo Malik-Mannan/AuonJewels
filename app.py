@@ -798,7 +798,6 @@ def admin_customers():
     customers = cursor.fetchall()
     db.close()
     return render_template("admin/customers.html", customers=customers)
-
 @app.route("/admin/story-images", methods=["GET", "POST"])
 @login_required
 def story_images():
@@ -808,9 +807,18 @@ def story_images():
             if section in request.files:
                 file = request.files[section]
                 if file and file.filename != '':
-                    ext = file.filename.rsplit('.', 1)[-1].lower()
-                    filename = f"{section}-story.{ext}"
-                    file.save(os.path.join(UPLOAD_FOLDER, filename))
+                    try:
+                        from PIL import Image
+                        img = Image.open(file.stream)
+                        img = img.convert('RGB')
+                        filename = f"{section}-story.webp"
+                        filepath = os.path.join(UPLOAD_FOLDER, filename)
+                        img.save(filepath, 'WEBP', quality=80)
+                    except Exception as e:
+                        print(f"WebP conversion failed: {e}")
+                        ext = file.filename.rsplit('.', 1)[-1].lower()
+                        filename = f"{section}-story.{ext}"
+                        file.save(os.path.join(UPLOAD_FOLDER, filename))
         flash("Story images updated!")
         return redirect(url_for('story_images'))
     return render_template("admin/story_images.html")

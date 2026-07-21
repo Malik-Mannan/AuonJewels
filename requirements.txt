@@ -6,3 +6,4 @@ python-dotenv
 flask-dance
 flask-mail
 cloudinary
+Pillow
