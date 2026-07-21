@@ -360,9 +360,9 @@ def place_order():
         email   = str(data.get('email',   '')).strip()
         address = str(data.get('address', '')).strip()
         cart    = data.get('cart', [])
-        subtotal = data.get('total', 0)
-        delivery_charge = 0 if subtotal >= 3000 else 250
-        total = subtotal + delivery_charge
+        subtotal        = data.get('subtotal', 0)
+        delivery_charge = data.get('delivery_charge', 0)
+        total           = subtotal + delivery_charge
 
         if not name:
             return jsonify({"success": False, "message": "Please enter your name."}), 400
