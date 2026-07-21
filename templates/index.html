@@ -3,7 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-<meta name="google-site-verification" content="e5SvBU3q_BcLpYXwyGzOHK8KIMdRJ-lA9kwCKjSBVsE" />  <title>Auon Jewels</title>
+
+  <!-- SEO & Performance -->
+<meta name="description" content="Auon Jewels — Affordable artificial jewellery in Karachi. Earrings, necklaces, bracelets and rings delivered across Pakistan.">
+<meta name="keywords" content="artificial jewellery karachi, earrings pakistan, necklaces karachi, bracelets, auon jewels">
+<meta name="author" content="Auon Jewels">
+
+<!-- Open Graph (for WhatsApp/Facebook preview) -->
+<meta property="og:title" content="Auon Jewels — Artificial Jewellery Karachi">
+<meta property="og:description" content="Affordable artificial jewellery delivered across Pakistan. Earrings, necklaces, bracelets & more!">
+<meta property="og:image" content="/static/images/logo.png">
+<meta property="og:url" content="https://auonjewels.onrender.com">
+<meta property="og:type" content="website">
+
+  <meta name="google-site-verification" content="e5SvBU3q_BcLpYXwyGzOHK8KIMdRJ-lA9kwCKjSBVsE" />  <title>Auon Jewels</title>
   <link rel="icon" type="image/png" href="/static/images/logo.png">
   <link rel="shortcut icon" href="/static/images/logo.png">
 <link rel="apple-touch-icon" href="/static/images/logo.png">
@@ -467,7 +480,7 @@
         <div class="story-img-frame">
           <div class="story-corner story-corner-tl"></div>
           <div class="story-corner story-corner-br"></div>
-          <img src="/static/images/earrings-story.jpg" alt="Earrings" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+          <img src="/static/images/earrings-story.jpg" alt="Earrings" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
           <div class="story-emoji-bg" style="display:none;">💍</div>
           <div class="story-img-tag"></div>
         </div>
@@ -491,7 +504,7 @@
         <div class="story-img-frame">
           <div class="story-corner story-corner-tl"></div>
           <div class="story-corner story-corner-br"></div>
-          <img src="/static/images/necklaces-story.jpg" alt="Necklaces" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+          <img src="/static/images/necklaces-story.jpg" alt="Necklaces" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
           <div class="story-emoji-bg" style="display:none;">📿</div>
           <div class="story-img-tag"></div>
         </div>
@@ -515,7 +528,7 @@
         <div class="story-img-frame">
           <div class="story-corner story-corner-tl"></div>
           <div class="story-corner story-corner-br"></div>
-          <img src="/static/images/bracelets-story.jpg" alt="Bracelets" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+          <img src="/static/images/bracelets-story.jpg" alt="Bracelets" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
           <div class="story-emoji-bg" style="display:none;">✨</div>
           <div class="story-img-tag"></div>
         </div>
@@ -555,7 +568,7 @@
         <div class="p-card" data-category="{{ p.category }}">
           <div class="p-img">
             {% if p.image %}
-            <img src="/static/images/{{ p.image }}" alt="{{ p.Name }}" onerror="this.style.display='none';this.nextSibling.style.display='flex';">
+            <img src="/static/images/{{ p.image }}" alt="{{ p.Name }}" loading="lazy" onerror="this.style.display='none';this.nextSibling.style.display='flex';">
             <div class="p-img-icon" style="display:none;">◇</div>
             {% else %}
             <div class="p-img-icon">◇</div>
