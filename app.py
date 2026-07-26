@@ -719,8 +719,7 @@ def edit_product(id):
 
         if new_stock > 5:
             cursor2.execute("DELETE FROM stock_alerts_sent WHERE product_id = %s", (id,))
-
-       for i in range(1, 4):
+        for i in range(1, 4):
             key = f'gallery_{i}'
             if key in request.files:
                 file = request.files[key]
