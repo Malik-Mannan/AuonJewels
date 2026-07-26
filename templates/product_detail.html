@@ -237,19 +237,19 @@
           <div class="img-corner br"></div>
 
           {% set all_images = [] %}
-          {% if product.image %}{% set _ = all_images.append(product.image) %}{% endif %}
-          {% for g in gallery %}{% set _ = all_images.append(g.image) %}{% endfor %}
+{% if product.image %}{% set _ = all_images.append(product.image) %}{% endif %}
+{% for g in gallery %}{% set _ = all_images.append(g.image) %}{% endfor %}
 
-          <div class="slides">
-            {% if all_images %}
-              {% for img in all_images %}
-              <div class="slide {% if loop.first %}active{% endif %}">
-                <img src="/static/images/{{ img }}" alt="{{ product.Name }}"
-                     onerror="this.style.display='none';this.nextSibling.style.display='flex';">
-                <div class="fallback" style="display:none;">◇</div>
-              </div>
-              {% endfor %}
-            {% else %}
+<div class="slides">
+  {% if all_images %}
+    {% for img in all_images %}
+    <div class="slide {% if loop.first %}active{% endif %}">
+      <img src="{{ img if img.startswith('http') else '/static/images/' + img }}" alt="{{ product.Name }}"
+           onerror="this.style.display='none';this.nextSibling.style.display='flex';">
+      <div class="fallback" style="display:none;">◇</div>
+    </div>
+    {% endfor %}
+  {% else %}
               <div class="slide active">
                 <div class="fallback">◇</div>
               </div>
@@ -391,8 +391,7 @@
         <a href="{{ url_for('product_detail', id=r.ID) }}" class="r-card">
           <div class="r-img">
             {% if r.image %}
-            <img src="/static/images/{{ r.image }}" alt="{{ r.Name }}"
-                 onerror="this.style.display='none';this.nextSibling.style.display='flex';">
+<img src="{{ r.image if r.image.startswith('http') else '/static/images/' + r.image }}" alt="{{ r.Name }}"                 onerror="this.style.display='none';this.nextSibling.style.display='flex';">
             <div class="r-icon" style="display:none;">◇</div>
             {% else %}
             <div class="r-icon">◇</div>
