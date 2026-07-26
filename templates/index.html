@@ -531,7 +531,7 @@
         <div class="story-img-frame">
           <div class="story-corner story-corner-tl"></div>
           <div class="story-corner story-corner-br"></div>
-<img src="/static/images/earrings-story.webp" alt="Earrings" loading="lazy" onerror="this.src='/static/images/earrings-story.jpg'">
+<img src="{{ story.earrings or '/static/images/earrings-story.webp' }}" alt="Earrings" loading="lazy" onerror="this.src='/static/images/earrings-story.jpg'">
           <div class="story-emoji-bg" style="display:none;">💍</div>
           <div class="story-img-tag"></div>
         </div>
@@ -555,7 +555,7 @@
         <div class="story-img-frame">
           <div class="story-corner story-corner-tl"></div>
           <div class="story-corner story-corner-br"></div>
-<img src="/static/images/necklaces-story.webp" alt="Necklaces" loading="lazy" onerror="this.src='/static/images/necklaces-story.jpg'">
+<img src="{{ story.necklaces or '/static/images/necklaces-story.webp' }}" alt="Necklaces" loading="lazy" onerror="this.src='/static/images/necklaces-story.jpg'">
           <div class="story-emoji-bg" style="display:none;">📿</div>
           <div class="story-img-tag"></div>
         </div>
@@ -579,7 +579,7 @@
         <div class="story-img-frame">
           <div class="story-corner story-corner-tl"></div>
           <div class="story-corner story-corner-br"></div>
-<img src="/static/images/bracelets-story.webp" alt="Bracelets" loading="lazy" onerror="this.src='/static/images/bracelets-story.jpg'">          
+<img src="{{ story.bracelets or '/static/images/bracelets-story.webp' }}" alt="Bracelets" loading="lazy" onerror="this.src='/static/images/bracelets-story.jpg'">          
 <div class="story-img-tag"></div>
         </div>
       </div>
@@ -618,7 +618,7 @@
         <div class="p-card" data-category="{{ p.category }}">
           <div class="p-img">
             {% if p.image %}
-            <img src="/static/images/{{ p.image }}" alt="{{ p.Name }}" loading="lazy" onerror="this.style.display='none';this.nextSibling.style.display='flex';">
+            <img src="{{ p.image if p.image.startswith('http') else '/static/images/' + p.image }}" alt="{{ p.Name }}" loading="lazy" onerror="this.style.display='none';this.nextSibling.style.display='flex';">
             <div class="p-img-icon" style="display:none;">◇</div>
             {% else %}
             <div class="p-img-icon">◇</div>

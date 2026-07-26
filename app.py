@@ -21,6 +21,19 @@ app.jinja_env.globals['enumerate'] = enumerate
 app.secret_key = os.environ.get('SECRET_KEY')
 
 UPLOAD_FOLDER = 'static/images'
+import cloudinary
+import cloudinary.uploader
+
+cloudinary.config(
+    cloud_name=os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    api_key=os.environ.get('CLOUDINARY_API_KEY'),
+    api_secret=os.environ.get('CLOUDINARY_API_SECRET'),
+    secure=True
+)
+
+def upload_to_cloudinary(file, folder="auon-jewels"):
+    result = cloudinary.uploader.upload(file, folder=folder)
+    return result['secure_url']
 ADMIN_USERNAME = os.environ.get('ADMIN_USERNAME')
 ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD')
 
@@ -181,8 +194,11 @@ def home():
     cursor = db.cursor(dictionary=True)
     cursor.execute("SELECT * FROM Products")
     products = cursor.fetchall()
+    cursor.execute("SELECT * FROM story_images")
+    story_rows = cursor.fetchall()
+    story = {row['section']: row['url'] for row in story_rows}
     db.close()
-    return render_template("index.html", products=products)
+    return render_template("index.html", products=products, story=story)
 
 @app.route("/product/<int:id>")
 def product_detail(id):
@@ -641,10 +657,7 @@ def add_product():
         if 'image' in request.files:
             file = request.files['image']
             if file and file.filename != '':
-                filename = secure_filename(file.filename)
-                os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-                file.save(os.path.join(UPLOAD_FOLDER, filename))
-                image_filename = filename
+                image_filename = upload_to_cloudinary(file)
         db = get_db()
         cursor = db.cursor()
         cursor.execute("""
@@ -685,10 +698,7 @@ def edit_product(id):
         if 'image' in request.files:
             file = request.files['image']
             if file and file.filename != '':
-                filename = secure_filename(file.filename)
-                os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-                file.save(os.path.join(UPLOAD_FOLDER, filename))
-                image_filename = filename
+                image_filename = upload_to_cloudinary(file)
 
         cursor2 = db.cursor()
         new_stock = int(request.form.get('stock', 0))
@@ -710,14 +720,12 @@ def edit_product(id):
         if new_stock > 5:
             cursor2.execute("DELETE FROM stock_alerts_sent WHERE product_id = %s", (id,))
 
-        for i in range(1, 4):
+       for i in range(1, 4):
             key = f'gallery_{i}'
             if key in request.files:
                 file = request.files[key]
                 if file and file.filename != '':
-                    filename = secure_filename(file.filename)
-                    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-                    file.save(os.path.join(UPLOAD_FOLDER, filename))
+                    gallery_url = upload_to_cloudinary(file)
                     cursor.execute(
                         "SELECT ID FROM product_images WHERE product_id=%s AND sort_order=%s",
                         (id, i)
@@ -726,12 +734,12 @@ def edit_product(id):
                     if existing:
                         cursor2.execute(
                             "UPDATE product_images SET image=%s WHERE product_id=%s AND sort_order=%s",
-                            (filename, id, i)
+                            (gallery_url, id, i)
                         )
                     else:
                         cursor2.execute(
                             "INSERT INTO product_images (product_id, image, sort_order) VALUES (%s, %s, %s)",
-                            (id, filename, i)
+                            (id, gallery_url, i)
                         )
 
         db.commit()
@@ -801,23 +809,20 @@ def admin_customers():
 @login_required
 def story_images():
     if request.method == "POST":
-        os.makedirs(UPLOAD_FOLDER, exist_ok=True)
         for section in ['earrings', 'necklaces', 'bracelets']:
             if section in request.files:
                 file = request.files[section]
                 if file and file.filename != '':
-                    try:
-                        from PIL import Image
-                        img = Image.open(file.stream)
-                        img = img.convert('RGB')
-                        filename = f"{section}-story.webp"
-                        filepath = os.path.join(UPLOAD_FOLDER, filename)
-                        img.save(filepath, 'WEBP', quality=80)
-                    except Exception as e:
-                        print(f"WebP conversion failed: {e}")
-                        ext = file.filename.rsplit('.', 1)[-1].lower()
-                        filename = f"{section}-story.{ext}"
-                        file.save(os.path.join(UPLOAD_FOLDER, filename))
+                    url = upload_to_cloudinary(file, folder=f"auon-jewels/story")
+                    cursor_url = get_db()
+                    c = cursor_url.cursor()
+                    c.execute(
+                        "INSERT INTO story_images (section, url) VALUES (%s, %s) "
+                        "ON DUPLICATE KEY UPDATE url=%s",
+                        (section, url, url)
+                    )
+                    cursor_url.commit()
+                    cursor_url.close()
         flash("Story images updated!")
         return redirect(url_for('story_images'))
     return render_template("admin/story_images.html")
