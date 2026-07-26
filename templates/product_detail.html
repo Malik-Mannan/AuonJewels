@@ -571,23 +571,37 @@ document.getElementById('zoomModal').addEventListener('click', function(e) {
 });
 
 const zoomModalImg = document.getElementById('zoomModalImg');
-
 zoomModalImg.addEventListener('click', function(e) {
   e.stopPropagation();
   zoomModalImg.classList.toggle('zoomed-in');
   if (!zoomModalImg.classList.contains('zoomed-in')) {
     zoomModalImg.style.transformOrigin = 'center center';
+  } else {
+    updateZoomOrigin(e.clientX, e.clientY);
   }
 });
-
 zoomModalImg.addEventListener('mousemove', function(e) {
   if (!zoomModalImg.classList.contains('zoomed-in')) return;
-  const rect = zoomModalImg.getBoundingClientRect();
-  const x = ((e.clientX - rect.left) / rect.width) * 100;
-  const y = ((e.clientY - rect.top) / rect.height) * 100;
-  zoomModalImg.style.transformOrigin = `${x}% ${y}%`;
+  updateZoomOrigin(e.clientX, e.clientY);
 });
 
+zoomModalImg.addEventListener('touchstart', function(e) {
+  e.stopPropagation();
+}, { passive: true });
+
+zoomModalImg.addEventListener('touchmove', function(e) {
+  if (!zoomModalImg.classList.contains('zoomed-in')) return;
+  e.preventDefault();
+  const touch = e.touches[0];
+  updateZoomOrigin(touch.clientX, touch.clientY);
+}, { passive: false });
+
+function updateZoomOrigin(clientX, clientY) {
+  const rect = zoomModalImg.getBoundingClientRect();
+  const x = ((clientX - rect.left) / rect.width) * 100;
+  const y = ((clientY - rect.top) / rect.height) * 100;
+  zoomModalImg.style.transformOrigin = `${x}% ${y}%`;
+}
 document.querySelector('.img-frame').addEventListener('click', function(e) {
   if (e.target.tagName === 'IMG') openZoom();
 });
