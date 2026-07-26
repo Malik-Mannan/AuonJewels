@@ -833,7 +833,11 @@
   <script>
     const MY_WHATSAPP = "923293931034";
     const IS_LOGGED_IN = {{ 'true' if session.customer_id else 'false' }};
-
+// ── SKIP LOADER ON BACK/FORWARD NAVIGATION ──
+if (performance.getEntriesByType("navigation")[0]?.type === "back_forward") {
+  document.getElementById('loader').style.display = 'none';
+  document.getElementById('mainNav').style.opacity = '1';
+}
     // ── CART KEY — shared with product_detail.html ──
     const CART_KEY = 'malikCart';
     function loadCart() { return JSON.parse(localStorage.getItem(CART_KEY) || '[]'); }
@@ -1144,5 +1148,20 @@ function toggleFaq(el) {
   document.querySelectorAll('.faq-item').forEach(f => f.classList.remove('open'));
   if (!wasOpen) item.classList.add('open');
 }
+// ── RESTORE SCROLL POSITION ──
+window.addEventListener('beforeunload', () => {
+  sessionStorage.setItem('homeScrollY', window.scrollY);
+});
+
+window.addEventListener('load', () => {
+  const savedScroll = sessionStorage.getItem('homeScrollY');
+  if (savedScroll) {
+    window.scrollTo(0, parseInt(savedScroll));
+    sessionStorage.removeItem('homeScrollY');
+  }
+});
+// ── INIT ──
+    renderCart();
+
   </script>
 </body>
