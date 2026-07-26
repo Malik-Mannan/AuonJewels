@@ -26,18 +26,18 @@
     .container{max-width:1100px;margin:0 auto;padding:4rem 3.5rem;}
     .product-wrap{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start;}
 
-    .img-frame{position:relative;width:100%;aspect-ratio:1;border:1px solid rgba(201,168,76,.15);background:linear-gradient(135deg,#120d04,#1a1208);overflow:hidden;}
-    .img-corner{position:absolute;width:20px;height:20px;border-color:var(--gold);border-style:solid;z-index:5;}
-    .img-corner.tl{top:-1px;left:-1px;border-width:1px 0 0 1px;}
-    .img-corner.br{bottom:-1px;right:-1px;border-width:0 1px 1px 0;}
+    .img-frame{position:relative;width:100%;aspect-ratio:1;border:1px solid rgba(201,168,76,.15);background:linear-gradient(135deg,#120d04,#1a1208);overflow:hidden;cursor:zoom-in;}
+.img-corner{position:absolute;width:20px;height:20px;border-color:var(--gold);border-style:solid;z-index:5;}
+.img-corner.tl{top:-1px;left:-1px;border-width:1px 0 0 1px;}
+.img-corner.br{bottom:-1px;right:-1px;border-width:0 1px 1px 0;}
     .stock-badge{position:absolute;top:14px;left:14px;background:var(--gold);color:var(--ink);font-size:.55rem;letter-spacing:.15em;text-transform:uppercase;padding:.25rem .7rem;font-weight:500;z-index:5;}
     .stock-badge.out{background:#333;color:#888;}
 
     .slides{position:absolute;inset:0;}
     .slide{position:absolute;inset:0;opacity:0;transition:opacity .7s ease;display:flex;align-items:center;justify-content:center;}
     .slide.active{opacity:1;}
-    .slide img{width:100%;height:100%;object-fit:cover;}
-    .fallback{font-size:6rem;opacity:.2;}
+.slide img{width:100%;height:100%;object-fit:cover;transition:transform .45s ease;}
+.img-frame:hover .slide.active img{transform:scale(1.4);}    .fallback{font-size:6rem;opacity:.2;}
     .slide-prev,.slide-next{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.5);border:none;color:rgba(255,255,255,.8);font-size:1.8rem;width:40px;height:40px;cursor:pointer;z-index:10;display:flex;align-items:center;justify-content:center;transition:all .2s;}
     .slide-prev{left:8px;}
     .slide-next{right:8px;}
@@ -526,10 +526,7 @@
       slides[currentSlide].classList.add('active');
       if(dots[currentSlide]) dots[currentSlide].classList.add('active');
     }
-    function changeSlide(delta) { goToSlide(currentSlide + delta); resetAuto(); }
-    function startAuto() { autoTimer = setInterval(() => goToSlide(currentSlide + 1), 3500); }
-    function resetAuto() { clearInterval(autoTimer); startAuto(); }
-    if (slides.length > 1) startAuto();
+    function changeSlide(delta) { goToSlide(currentSlide + delta); }
 
     // ── QTY ──
     let selectedQty = 1;
@@ -718,7 +715,17 @@ btn.style.cursor = 'pointer';
     window.addEventListener('storage',e=>{if(e.key==='malikCart'){renderCart();updateCartBtn();}});
 
     renderCart();
-
+// ── IMAGE ZOOM (desktop hover + mobile tap) ──
+const imgFrame = document.querySelector('.img-frame');
+if (imgFrame) {
+  imgFrame.addEventListener('click', function(e) {
+    if (window.matchMedia('(hover: none)').matches) {
+      if (e.target.tagName === 'IMG') {
+        imgFrame.classList.toggle('zoomed');
+      }
+    }
+  });
+}
 
 
   </script>

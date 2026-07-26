@@ -10,7 +10,7 @@ import traceback
 from datetime import timedelta
 from flask import Response
 import requests
-
+from flask_mail import Mail, Message
 load_dotenv()
 
 app = Flask(__name__)
@@ -257,9 +257,8 @@ def my_orders():
         order['order_items'] = cursor.fetchall()
     db.close()
     return render_template("my_orders.html", orders=orders)
-
 # ══════════════════════════════════════════════
-#  TEST EMAIL
+#  TEST EMAIL n dnfmjndf
 # ══════════════════════════════════════════════
 @app.route("/test-email")
 def test_email():
@@ -326,12 +325,12 @@ def send_low_stock_alert(db, product_id, product_name, stock):
         </div>
         """
 
-        msg = Message(
+        send_email_brevo(
+            to_email=BREVO_SENDER_EMAIL,
+            to_name="Admin",
             subject=subject,
-            recipients=[app.config['MAIL_USERNAME']],
-            html=html_body
+            html_content=html_body
         )
-        mail.send(msg)
 
         cursor2 = db.cursor()
         cursor2.execute(
@@ -587,12 +586,12 @@ def send_admin_notification_email(order_id, customer_name, phone, email, address
     </div>
     """
 
-    msg = Message(
+    send_email_brevo(
+        to_email=BREVO_SENDER_EMAIL,
+        to_name="Admin",
         subject=f"🛍 New Order #{order_id} — {customer_name}",
-        recipients=[os.environ.get('MAIL_USERNAME')],
-        html=html_body
+        html_content=html_body
     )
-    mail.send(msg)
 
 # ══════════════════════════════════════════════
 #  ADMIN ROUTES
@@ -885,12 +884,54 @@ def sitemap():
 def robots():
     content = "User-agent: *\nAllow: /\n\nSitemap: https://auonjewels.onrender.com/sitemap.xml"
     return Response(content, mimetype='text/plain')
-
-@app.route("/contact")
+@app.route("/contact", methods=["GET", "POST"])
 def contact():
+    if request.method == "POST":
+        first_name = request.form.get('first_name', '').strip()
+        last_name  = request.form.get('last_name', '').strip()
+        phone      = request.form.get('phone', '').strip()
+        email      = request.form.get('email', '').strip()
+        subject    = request.form.get('subject', 'General Inquiry').strip()
+        message    = request.form.get('message', '').strip()
+
+        if not first_name or not phone or not message:
+            flash("Please fill in all required fields.")
+            return redirect(url_for('contact'))
+
+        try:
+            html_body = f"""
+            <div style="background:#0a0602;padding:40px 32px;font-family:Georgia,serif;max-width:500px;margin:0 auto;">
+              <div style="text-align:center;padding-bottom:20px;margin-bottom:28px;border-bottom:1px solid #c9a84c;">
+                <h1 style="font-size:22px;font-weight:300;letter-spacing:6px;color:#c9a84c;text-transform:uppercase;margin:0;">Auon Jewels</h1>
+                <p style="font-size:10px;letter-spacing:3px;color:#8a7e6a;text-transform:uppercase;margin:6px 0 0;">New Contact Form Message</p>
+              </div>
+              <table style="width:100%;border-collapse:collapse;color:#d4c9b0;font-size:14px;">
+                <tr><td style="padding:8px 0;color:#8a7e6a;width:100px;">Name</td><td>{first_name} {last_name}</td></tr>
+                <tr><td style="padding:8px 0;color:#8a7e6a;">Phone</td><td>{phone}</td></tr>
+                <tr><td style="padding:8px 0;color:#8a7e6a;">Email</td><td>{email or 'Not provided'}</td></tr>
+                <tr><td style="padding:8px 0;color:#8a7e6a;">Subject</td><td>{subject}</td></tr>
+              </table>
+              <div style="background:#120d04;border:1px solid #2a1f0a;padding:16px;margin-top:20px;">
+                <p style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#8a7e6a;margin:0 0 8px;">Message</p>
+                <p style="font-size:14px;color:#d4c9b0;margin:0;line-height:1.7;">{message}</p>
+              </div>
+            </div>
+            """
+            send_email_brevo(
+                to_email=BREVO_SENDER_EMAIL,
+                to_name="Admin",
+                subject=f"New Contact Form — {subject}",
+                html_content=html_body
+            )
+            flash("Message sent successfully! We'll get back to you soon.")
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            flash("Something went wrong. Please try WhatsApp instead.")
+
+        return redirect(url_for('contact'))
+
     return render_template("contact.html")
-
-
 # ══════════════════════════════════════════════
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))

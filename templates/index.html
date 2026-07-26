@@ -27,6 +27,36 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <style>
+
+  /* ── SCROLL REVEAL ── */
+.reveal{opacity:0;transform:translateY(40px);transition:opacity .8s ease,transform .8s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+.reveal-left{opacity:0;transform:translateX(-40px);transition:opacity .8s ease,transform .8s ease;}
+.reveal-left.visible{opacity:1;transform:translateX(0);}
+.reveal-right{opacity:0;transform:translateX(40px);transition:opacity .8s ease,transform .8s ease;}
+.reveal-right.visible{opacity:1;transform:translateX(0);}
+.nav-logo span{color:var(--gold);}
+/* ── COUNTER SECTION ── */f
+.stats-band{padding:4rem 3.5rem;background:linear-gradient(135deg,#0f0a03,#1a1005);border-top:1px solid rgba(201,168,76,.1);border-bottom:1px solid rgba(201,168,76,.1);}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2rem;max-width:900px;margin:0 auto;text-align:center;}
+.stat-item{}
+.stat-num{font-family:'Cormorant Garamond',serif;font-size:3.5rem;font-weight:200;color:var(--gold);line-height:1;}
+.stat-label{font-size:.6rem;letter-spacing:.25em;text-transform:uppercase;color:var(--muted);margin-top:.5rem;}
+
+/* ── FLOATING ELEMENTS ── */
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@keyframes floatSlow{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-8px) rotate(5deg)}}
+.float-el{animation:float 4s ease-in-out infinite;}
+.float-slow{animation:floatSlow 6s ease-in-out infinite;}
+
+/* ── SHIMMER on gold text ── */
+@keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}
+.shimmer-text{background:linear-gradient(90deg,var(--gold),var(--gold-light),var(--gold));background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmer 3s linear infinite;}
+
+@media(max-width:768px){
+  .stats-grid{grid-template-columns:repeat(2,1fr);}
+  .stats-band{padding:3rem 1.2rem;}
+}
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     :root{--gold:#c9a84c;--gold-light:#e8d08a;--ink:#0a0602;--cream:#f5f0e8;--muted:#8a7e6a;}
     body{font-family:'DM Sans',sans-serif;background:var(--ink);color:#d4c9b0;overflow-x:hidden;cursor:none;}
@@ -88,8 +118,7 @@
     .m-cart-btn{display:block;margin-top:1rem;padding:.8rem;background:var(--gold);color:var(--ink);font-size:.7rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;text-align:center;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .2s;width:100%;}
     .m-cart-btn:hover{background:var(--gold-light);}
 
-    .panel{scroll-snap-align:start;height:100vh;min-height:600px;position:relative;overflow:hidden;display:flex;align-items:center;}
-    .s-story{background:var(--ink);}
+.panel{scroll-snap-align:start;min-height:auto;padding:4rem 0;position:relative;overflow:hidden;display:flex;align-items:center;}    .s-story{background:var(--ink);}
     .story-bg-img{position:absolute;inset:0;z-index:0;}
     .story-bg-gradient{position:absolute;inset:0;}
     .story-bg-ear{background:radial-gradient(ellipse at 80% 50%,rgba(201,168,76,.07) 0%,transparent 65%);}
@@ -126,8 +155,7 @@
     .marquee-track{display:flex;animation:mq 20s linear infinite;white-space:nowrap;}
     .marquee-track span{font-size:.62rem;letter-spacing:.25em;text-transform:uppercase;color:var(--ink);font-weight:500;padding:0 2rem;}
     @keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-    .hero{min-height:100vh;display:flex;align-items:center;padding:0 5rem;padding-top:100px;position:relative;overflow:hidden;}
-    .hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 70% 50%,rgba(201,168,76,.06) 0%,transparent 60%);pointer-events:none;}
+.hero{min-height:78vh;display:flex;align-items:center;padding:0 5rem;padding-top:100px;position:relative;overflow:hidden;}    .hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 70% 50%,rgba(201,168,76,.06) 0%,transparent 60%);pointer-events:none;}
     .hero-content{max-width:700px;position:relative;z-index:2;}
     .hero-eyebrow{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;opacity:0;transform:translateY(20px);}
     .hero-eyebrow-line{width:36px;height:1px;background:var(--gold);}
@@ -347,6 +375,27 @@
       .l-logo{font-size:1.6rem !important;}
       
     }
+    .faq-section{padding:5rem 3.5rem;border-top:1px solid rgba(201,168,76,.08);}
+.faq-list{max-width:750px;margin:0 auto;}
+.faq-item{border-bottom:1px solid rgba(201,168,76,.1);}
+.faq-q{display:flex;justify-content:space-between;align-items:center;padding:1.3rem 0;cursor:pointer;user-select:none;}
+.faq-q-text{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:300;color:#e8ddc8;}
+.faq-icon{font-size:1.2rem;color:var(--gold);transition:transform .3s;flex-shrink:0;margin-left:1rem;}
+.faq-item.open .faq-icon{transform:rotate(45deg);}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .35s ease;}
+.faq-item.open .faq-a{max-height:200px;}
+.faq-a-inner{padding:0 0 1.3rem;font-size:.82rem;color:rgba(212,201,176,.6);line-height:1.9;font-family:'DM Sans',sans-serif;max-width:650px;}
+
+@media(max-width:768px){
+  .faq-section{padding:3rem 1.2rem;}
+  .faq-q-text{font-size:1rem;}
+}
+.f-bottom{display:flex;align-items:center;justify-content:space-between;padding-top:2.5rem;border-top:1px solid rgba(255,255,255,.06);flex-wrap:wrap;gap:1rem;}
+.f-bottom-links{display:flex;gap:1.5rem;}
+.social-link{display:inline-flex;align-items:center;gap:.5rem;font-size:.68rem;letter-spacing:.1em;color:rgba(255,255,255,.3);text-decoration:none;transition:color .3s,transform .3s;}
+.social-link img{transition:transform .3s;}
+.social-link:hover{color:var(--gold);transform:translateY(-2px);}
+.social-link:hover img{transform:scale(1.15);}
   </style>
 </head>
 <body>
@@ -387,6 +436,7 @@
   <nav id="mainNav">
     <a href="/" class="nav-logo">
   <img src="/static/images/logo.webp" alt="Auon Jewels"/>
+  Auon <span>Jewels</span>
 </a>
     <div class="nav-center">
       <a href="#categories" class="nav-link">Categories</a>
@@ -433,15 +483,12 @@
         <div class="hero-eyebrow-line"></div>
         <div class="hero-eyebrow-text">New Collection 2026</div>
       </div>
-      <h1 class="hero-title" id="hTitle">Jewellery that<br>makes you <em>shine</em></h1>
-      <p class="hero-desc" id="hDesc">Look stunning at every occasion. Premium jewellery for &amp; more. Pakistani women affordable, beautiful, delivered to your doorstep.</p>
-      <div id="hActions">
+<h1 class="hero-title" id="hTitle">Jewellery that<br>makes you <em>shine</em></h1>      <div id="hActions">
         <a href="#products" class="btn-cta">Shop Now</a>
         <a href="https://wa.me/923293931034" class="btn-outline" target="_blank">WhatsApp Us</a>
       </div>
     </div>
   </section>
-
   <!-- MARQUEE -->
   <div class="marquee" style="position:relative;z-index:10;">
     <div class="marquee-track">
@@ -451,7 +498,7 @@
       <span>Rings ◆</span><span>Jewellery Sets ◆</span><span>Anklets ◆</span><span>Free Delivery ◆</span>
     </div>
   </div>
-
+ 
   <!-- CATEGORIES -->
   <section class="section" id="categories">
     <div class="section-eyebrow">Browse by</div>
@@ -603,6 +650,62 @@
     </div>
   </section>
 
+  <!-- FAQ -->
+<section class="section faq-section" id="faq">
+  <div class="section-eyebrow">Got Questions?</div>
+  <div class="section-title">Frequently Asked</div>
+  <div class="faq-list">
+
+    <div class="faq-item open">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <div class="faq-q-text">Do you deliver outside Karachi?</div>
+        <div class="faq-icon">+</div>
+      </div>
+      <div class="faq-a"><div class="faq-a-inner">Right now we only deliver within Karachi. We're working on expanding to other cities soon — follow us on Instagram for updates!</div></div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <div class="faq-q-text">How long does delivery take in Karachi?</div>
+        <div class="faq-icon">+</div>
+      </div>
+      <div class="faq-a"><div class="faq-a-inner">Orders within Karachi are usually delivered within 1-3 business days after confirmation.</div></div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <div class="faq-q-text">What are the delivery charges?</div>
+        <div class="faq-icon">+</div>
+      </div>
+      <div class="faq-a"><div class="faq-a-inner">Delivery is PKR 250 for orders under PKR 3,000. Orders above PKR 3,000 get FREE delivery!</div></div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <div class="faq-q-text">Is the jewellery real gold or silver?</div>
+        <div class="faq-icon">+</div>
+      </div>
+      <div class="faq-a"><div class="faq-a-inner">All our pieces are artificial/imitation jewellery — high quality, affordable, and designed to look stunning without the real gold price tag.</div></div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <div class="faq-q-text">How do I place an order?</div>
+        <div class="faq-icon">+</div>
+      </div>
+      <div class="faq-a"><div class="faq-a-inner">Login with Google, add items to your cart, and checkout with your delivery address. You can also order directly via WhatsApp.</div></div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <div class="faq-q-text">Can I return or exchange a product?</div>
+        <div class="faq-icon">+</div>
+      </div>
+      <div class="faq-a"><div class="faq-a-inner">Message us on WhatsApp within 24 hours of delivery if there's a defect and we'll sort it out for you.</div></div>
+    </div>
+
+  </div>
+</section>
   <!-- QUOTE -->
   <div class="quote-band">
     <div class="quote-text">"Every woman deserves to feel beautiful, every day."</div>
@@ -632,23 +735,23 @@
         <li><a href="/my-orders">Track Order</a></li>
         <li><a href="/faq">FAQ</a></li>
 <li><a href="/contact">Contact</a></li>      </ul>
-</div>
-      <div class="f-col"><h4>Company</h4><ul>
-        <li><a href="#">About Us</a></li>
-        <li><a href="#">Blog</a></li>
-        <li><a href="#">Careers</a></li>
-        <li><a href="#">Privacy</a></li>
-        <li><a href="#">Terms</a></li>
-      </ul></div>
-    </div>
     <div class="f-bottom">
-      <span class="f-copy">© 2026 Auon Jewels · All Right Reserved.</span>
-      <div class="f-bottom-links">
-        <a href="https://www.instagram.com/auon.jewels/">Instagram</a>
-        <a href="https://www.facebook.com/profile.php?id=61590888404238">Facebook</a>
-        <a href="https://wa.me/923293931034" target="_blank">WhatsApp</a>
-      </div>
-    </div>
+  <span class="f-copy">© 2026 Auon Jewels · All Rights Reserved.</span>
+  <div class="f-bottom-links">
+    <a href="https://www.instagram.com/auon.jewels/" target="_blank" class="social-link">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" width="16" height="16" alt=""/>
+      Instagram
+    </a>
+    <a href="https://www.facebook.com/profile.php?id=61590888404238" target="_blank" class="social-link">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" width="16" height="16" alt=""/>
+      Facebook
+    </a>
+    <a href="https://wa.me/923293931034" target="_blank" class="social-link">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="16" height="16" alt=""/>
+      WhatsApp
+    </a>
+  </div>
+</div>
   </div>
 </section>
 
@@ -1034,6 +1137,12 @@
     window.addEventListener('storage', (e) => {
       if (e.key === 'malikCart') { renderCart(); updateCartBtn(); }
     });
-    
+   // ── FAQ ACCORDION ──
+function toggleFaq(el) {
+  const item = el.parentElement;
+  const wasOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(f => f.classList.remove('open'));
+  if (!wasOpen) item.classList.add('open');
+}
   </script>
 </body>

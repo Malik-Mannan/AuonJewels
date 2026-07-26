@@ -95,7 +95,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2rem;display:fl
 
 <nav>
   <a href="/" class="nav-logo">
-    <img src="/static/images/logo.png" alt="Auon Jewels"/>
     Auon <span>Jewels</span>
   </a>
   <a href="javascript:history.back()" class="nav-back">← Back</a>
@@ -141,50 +140,50 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2rem;display:fl
   <div class="contact-grid">
 
     <!-- FORM -->
-    <div class="contact-form">
-      <div class="form-title">Send us a Message</div>
-      <div class="form-sub">Fill out the form below and we'll get back to you within 24 hours via WhatsApp or email.</div>
-      <form id="contactForm" onsubmit="submitForm(event)">
-        <div class="form-row">
-          <div class="field">
-            <label>First Name *</label>
-            <input type="text" placeholder="Sara" required/>
-          </div>
-          <div class="field">
-            <label>Last Name</label>
-            <input type="text" placeholder="Ahmed"/>
-          </div>
-        </div>
-        <div class="field">
-          <label>Phone Number *</label>
-          <input type="tel" placeholder="03001234567" required/>
-        </div>
-        <div class="field">
-          <label>Email Address</label>
-          <input type="email" placeholder="sara@email.com"/>
-        </div>
-        <div class="field">
-          <label>Subject</label>
-          <select>
-            <option value="">Select a topic</option>
-            <option>Order Inquiry</option>
-            <option>Product Question</option>
-            <option>Return / Exchange</option>
-            <option>Delivery Issue</option>
-            <option>Custom Order</option>
-            <option>Other</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>Message *</label>
-          <textarea placeholder="Write your message here..." required></textarea>
-        </div>
-        <button type="submit" class="submit-btn"><span>Send Message →</span></button>
-        <div class="success-msg" id="successMsg">
-          ✓ Message sent! We'll contact you on WhatsApp shortly.
-        </div>
-      </form>
+    <form id="contactForm" method="POST" action="{{ url_for('contact') }}">
+  <div class="form-row">
+    <div class="field">
+      <label>First Name *</label>
+      <input type="text" name="first_name" placeholder="Sara" required/>
     </div>
+    <div class="field">
+      <label>Last Name</label>
+      <input type="text" name="last_name" placeholder="Ahmed"/>
+    </div>
+  </div>
+  <div class="field">
+    <label>Phone Number *</label>
+    <input type="tel" name="phone" placeholder="03001234567" required/>
+  </div>
+  <div class="field">
+    <label>Email Address</label>
+    <input type="email" name="email" placeholder="sara@email.com"/>
+  </div>
+  <div class="field">
+    <label>Subject</label>
+    <select name="subject">
+      <option value="General Inquiry">Select a topic</option>
+      <option>Order Inquiry</option>
+      <option>Product Question</option>
+      <option>Return / Exchange</option>
+      <option>Delivery Issue</option>
+      <option>Custom Order</option>
+      <option>Other</option>
+    </select>
+  </div>
+  <div class="field">
+    <label>Message *</label>
+    <textarea name="message" placeholder="Write your message here..." required></textarea>
+  </div>
+  <button type="submit" class="submit-btn"><span>Send Message →</span></button>
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="success-msg" style="display:block;">
+      {{ messages[0] }}
+    </div>
+    {% endif %}
+  {% endwith %}
+</form>
 
     <!-- INFO -->
     <div class="contact-info">
@@ -211,14 +210,14 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2rem;display:fl
           <div class="info-icon">📍</div>
           <div class="info-text">
             <span>Location</span>
-            <p>Karachi, Pakistan</p>
+            <p>Karachi</p>
           </div>
         </div>
         <div class="info-row">
           <div class="info-icon">🚚</div>
           <div class="info-text">
             <span>Delivery</span>
-            <p>All across Pakistan</p>
+            <p>All across Karachi</p>
           </div>
         </div>
       </div>
@@ -266,7 +265,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2rem;display:fl
   <div class="map-block">
     <div class="map-header">
       <h3>We Deliver to Your Doorstep</h3>
-      <p>Serving all areas of Karachi and delivering across Pakistan</p>
+      <p>Serving all areas of Karachi and delivering across Karachi</p>
     </div>
     <iframe
       src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d462317.8454405075!2d66.68149895!3d25.1932697!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3eb33e06651d4bbf%3A0x9cf92f44555a0c23!2sKarachi%2C%20Karachi%20City%2C%20Sindh%2C%20Pakistan!5e0!3m2!1sen!2s!4v1717000000000!5m2!1sen!2s"
@@ -282,6 +281,15 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2rem;display:fl
 <script>
 function submitForm(e){
   e.preventDefault();
+  const firstName = document.querySelector('input[placeholder="Sara"]').value;
+  const lastName  = document.querySelector('input[placeholder="Ahmed"]').value;
+  const phone     = document.querySelector('input[type="tel"]').value;
+  const email     = document.querySelector('input[type="email"]').value;
+  const subject   = document.querySelector('select').value || 'General Inquiry';
+  const message   = document.querySelector('textarea').value;
+
+  const waText = `New Contact Form Message%0A%0AName: ${firstName} ${lastName}%0APhone: ${phone}%0AEmail: ${email || 'Not provided'}%0ASubject: ${subject}%0A%0AMessage:%0A${message}`;
+
   const btn = document.querySelector('.submit-btn');
   btn.style.opacity='.7';
   setTimeout(()=>{
@@ -289,10 +297,9 @@ function submitForm(e){
     document.getElementById('successMsg').style.display='block';
     document.getElementById('contactForm').reset();
     setTimeout(()=>{
-      window.open('https://wa.me/923293931034?text=Hi! I just sent a message through your website contact form.','_blank');
+      window.open(`https://wa.me/923293931034?text=${waText}`,'_blank');
     },1500);
   },1000);
-  
 }
 
 </script>
